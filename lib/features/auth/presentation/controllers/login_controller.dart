@@ -3,19 +3,23 @@ import '../../../../shared/providers/dependencies.dart';
 
 class LoginState {
   final bool isLoading;
+  final bool isSuccess;
   final String? error;
 
   const LoginState({
     this.isLoading = false,
+    this.isSuccess = false,
     this.error,
   });
 
   LoginState copyWith({
     bool? isLoading,
+    bool? isSuccess,
     String? error,
   }) {
     return LoginState(
       isLoading: isLoading ?? this.isLoading,
+      isSuccess: isSuccess ?? this.isSuccess,
       error: error ?? this.error,
     );
   }
@@ -42,7 +46,7 @@ class LoginController extends Notifier<LoginState> {
       // final tokenStorage = ref.read(tokenStorageProvider);
       // await tokenStorage.saveToken("mock_token_${user.id}");
 
-      state = state.copyWith(isLoading: false);
+      state = state.copyWith(isLoading: false, isSuccess: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
