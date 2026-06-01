@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../controllers/login_controller.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -30,6 +31,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginControllerProvider);
+
+    // Navigate to profile when login succeeds
+    ref.listen<LoginState>(loginControllerProvider, (previous, next) {
+      if (next.isSuccess) {
+        context.go('/profile');
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(

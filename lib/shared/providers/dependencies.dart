@@ -6,6 +6,11 @@ import '../../features/auth/data/datasources/auth_remote_datasource.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
+import '../../features/profile/data/datasources/profile_remote_datasource.dart';
+import '../../features/profile/data/repositories/profile_repository_impl.dart';
+import '../../features/profile/domain/repositories/profile_repository.dart';
+import '../../features/profile/domain/usecases/get_profile_usecase.dart';
+import '../../features/profile/domain/usecases/update_profile_usecase.dart';
 
 // --- Core Providers ---
 
@@ -37,4 +42,27 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 final loginUseCaseProvider = Provider<LoginUseCase>((ref) {
   final repository = ref.watch(authRepositoryProvider);
   return LoginUseCase(repository);
+});
+
+// --- Profile Feature Providers ---
+
+final profileRemoteDatasourceProvider =
+    Provider<ProfileRemoteDatasource>((ref) {
+  final dioClient = ref.watch(dioClientProvider);
+  return ProfileRemoteDatasource(dioClient.dio);
+});
+
+final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
+  final remoteDatasource = ref.watch(profileRemoteDatasourceProvider);
+  return ProfileRepositoryImpl(remoteDatasource);
+});
+
+final getProfileUseCaseProvider = Provider<GetProfileUseCase>((ref) {
+  final repository = ref.watch(profileRepositoryProvider);
+  return GetProfileUseCase(repository);
+});
+
+final updateProfileUseCaseProvider = Provider<UpdateProfileUseCase>((ref) {
+  final repository = ref.watch(profileRepositoryProvider);
+  return UpdateProfileUseCase(repository);
 });
