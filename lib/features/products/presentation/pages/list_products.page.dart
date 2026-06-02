@@ -15,7 +15,7 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(productControllerProvider.notifier).loadProducts();
+      ref.read(productControllerProvider.notifier).searchProducts(query: null);
     });
   }
 
@@ -55,7 +55,7 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                ref.read(productControllerProvider.notifier).loadProducts();
+                ref.read(productControllerProvider.notifier).searchProducts();
               },
               child: const Text('Retry'),
             ),
@@ -71,7 +71,7 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
 
     return RefreshIndicator(
       onRefresh: () async {
-        ref.read(productControllerProvider.notifier).loadProducts();
+        ref.read(productControllerProvider.notifier).searchProducts();
       },
       child: ListView.separated(
         padding: const EdgeInsets.all(16),
@@ -89,7 +89,7 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => context.go('/products/detail/${product.id}'),
+        onTap: () => context.go('/products/${product.id}'),
         mouseCursor: SystemMouseCursors.click,
         hoverColor: Colors.blue.withOpacity(0.05),
         borderRadius: BorderRadius.circular(12),
@@ -104,9 +104,9 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
               // Thumbnail
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: product.imageUrl != null
+                child: product.image != null
                     ? Image.network(
-                        product.imageUrl!,
+                        product.image!,
                         width: 64,
                         height: 64,
                         fit: BoxFit.cover,

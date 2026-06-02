@@ -29,10 +29,10 @@ class _ProductCreatePageState extends ConsumerState<ProductCreatePage> {
     if (!_formKey.currentState!.validate()) return;
 
     await ref.read(productControllerProvider.notifier).createProduct(
-          name: _nameController.text.trim(),
-          description: _descriptionController.text.trim(),
-          price: double.parse(_priceController.text.trim()),
-    });
+      name: _nameController.text.trim(),
+      description: _descriptionController.text.trim(),
+      price: double.parse(_priceController.text.trim()),
+    );
     if (mounted) context.go('/products');
   }
 
@@ -45,7 +45,6 @@ class _ProductCreatePageState extends ConsumerState<ProductCreatePage> {
         title: const Text('New Product'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          mouseCursor: SystemMouseCursors.click,
           onPressed: () => context.go('/products'),
         ),
       ),
@@ -105,7 +104,6 @@ class _ProductCreatePageState extends ConsumerState<ProductCreatePage> {
                 height: 50,
                 child: ElevatedButton.icon(
                   onPressed: productState.isLoading ? null : _submit,
-                  mouseCursor: SystemMouseCursors.click,
                   style: ButtonStyle(
                     overlayColor: WidgetStateProperty.resolveWith((states) {
                       if (states.contains(WidgetState.hovered)) {

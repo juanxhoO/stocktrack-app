@@ -70,8 +70,8 @@ class ProductController extends Notifier<ProductState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      final removeProductUseCase = ref.read(removeProductUseCaseProvider);
-      await removeProductUseCase.call(id);
+      final deleteProductUseCase = ref.read(deleteProductUseCaseProvider);
+      await deleteProductUseCase.call(id);
       state = state.copyWith(isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -83,8 +83,7 @@ class ProductController extends Notifier<ProductState> {
     String? description,
     String? imageUrl,
     String? unitOfMeasurement,
-    int? quantityPerUnit,
-    double? pricePerUnit,
+    double? price,
    }) async {
     state = state.copyWith(isLoading: true, error: null);
 
@@ -93,10 +92,8 @@ class ProductController extends Notifier<ProductState> {
       final product = await createProductUseCase.call(
         name: name,
         description: description,
-        imageUrl: imageUrl,
         unitOfMeasurement: unitOfMeasurement,
-        quantityPerUnit: quantityPerUnit,
-        pricePerUnit: pricePerUnit,
+        price: price,
       );
       state = state.copyWith(isLoading: false, product: product);
     } catch (e) {
@@ -105,13 +102,11 @@ class ProductController extends Notifier<ProductState> {
   }
 
   Future<void> updateProduct({
-    String? id,
     String? name,
     String? description,
     String? imageUrl,
     String? unitOfMeasurement,
-    int? quantityPerUnit,
-    double? pricePerUnit,
+    double? price,
   }) async {
     state = state.copyWith(isLoading: true, error: null);
 
@@ -120,10 +115,8 @@ class ProductController extends Notifier<ProductState> {
       final updatedProduct = await updateProductUseCase.call(
         name: name,
         description: description,
-        imageUrl: imageUrl,
         unitOfMeasurement: unitOfMeasurement,
-        quantityPerUnit: quantityPerUnit,
-        pricePerUnit: pricePerUnit,
+        price: price,
       );
       state = state.copyWith(isLoading: false, product: updatedProduct);
     } catch (e) {

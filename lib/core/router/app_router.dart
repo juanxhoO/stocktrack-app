@@ -6,7 +6,7 @@ import '../../features/products/presentation/pages/list_products.page.dart';
 import '../../features/products/presentation/pages/create_product_page.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/products',
   routes: [
     GoRoute(
       path: '/login',
