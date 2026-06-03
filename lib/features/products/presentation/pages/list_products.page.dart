@@ -132,6 +132,15 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
                         fontSize: 15,
                       ),
                     ),
+
+
+                     Text(
+                      "ID: "+product.id,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
+                    ),
                     const SizedBox(height: 4),
                     Text(
                       product.description ?? '',
