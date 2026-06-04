@@ -81,12 +81,10 @@ class ProductController extends Notifier<ProductState> {
    Future<void> createProduct({ 
     String? name,
     String? description,
-    String? imageUrl,
     String? unitOfMeasurement,
     double? price,
    }) async {
     state = state.copyWith(isLoading: true, error: null);
-
     try {
       final createProductUseCase = ref.read(createProductUseCaseProvider);
       final product = await createProductUseCase.call(
@@ -104,7 +102,6 @@ class ProductController extends Notifier<ProductState> {
   Future<void> updateProduct({
     String? name,
     String? description,
-    String? imageUrl,
     String? unitOfMeasurement,
     double? price,
   }) async {
