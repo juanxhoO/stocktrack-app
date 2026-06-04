@@ -15,6 +15,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
   @override
   void initState() {
     super.initState();
+    debugPrint('ProductPage ID: ${widget.id}');
     Future.microtask(() {
       ref.read(productControllerProvider.notifier).loadProduct(widget.id);
     });
@@ -23,7 +24,6 @@ class _ProductPageState extends ConsumerState<ProductPage> {
   @override
   Widget build(BuildContext context) {
     final productState = ref.watch(productControllerProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products'),
@@ -74,15 +74,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
       onRefresh: () async {
         ref.read(productControllerProvider.notifier).loadProduct(widget.id);
       },
-      child: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: products.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (context, index) {
-          final product = products[index];
-          return _buildProductCard(product);
-        },
-      ),
+      child: _buildProductCard(products[0])
     );
   }
 
@@ -102,51 +94,6 @@ class _ProductPageState extends ConsumerState<ProductPage> {
           ),
           child: Row(
             children: [
-              // Thumbnail
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: product.imageUrl != null
-                    ? Image.network(
-                        product.imageUrl!,
-                        width: 64,
-                        height: 64,
-                        fit: BoxFit.cover,
-                      )
-                    : Container(
-                        width: 64,
-                        height: 64,
-                        color: Colors.grey.shade100,
-                        child: const Icon(Icons.inventory_2_outlined,
-                            color: Colors.grey),
-                      ),
-              ),
-              const SizedBox(width: 12),
-              // Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      product.description ?? '',
-                      style: TextStyle(
-                        color: Colors.grey.shade500,
-                        fontSize: 13,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
               // Price
               Text(
                 '\$${product.price.toStringAsFixed(2)}',

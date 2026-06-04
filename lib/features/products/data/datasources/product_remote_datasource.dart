@@ -3,7 +3,13 @@ import '../models/product_model.dart';
 
 class ProductRemoteDatasource {
   final Dio dio;
-
+final images = [
+  'https://picsum.photos/seed/product1/600/600',
+  'https://picsum.photos/seed/product2/600/600',
+  'https://picsum.photos/seed/product3/600/600',
+  'https://picsum.photos/seed/product4/600/600',
+  'https://picsum.photos/seed/product5/600/600',
+];
   ProductRemoteDatasource(this.dio);
 
   Future<List<ProductModel>> searchProducts({String? query}) async {
@@ -13,21 +19,60 @@ class ProductRemoteDatasource {
 
     // Mocked for demonstration
     await Future.delayed(const Duration(seconds: 1));
-    return [
-      ProductModel(
-      id: '123',
-      name: 'Sample Product',
-      description: 'A mock description for our product.',
-      image: 'https://example.com/image.jpg',
-      price: 19.99,
-      barcode: '1234567890123',
-      category: 'Electronics',
-      quantityPerUnit: 1,
-      unitOfMeasurement: 'Piece',
-      createdAt: '2023-10-01T00:00:00.000Z',
-      updatedAt: '2023-10-01T00:00:00.000Z',
-    ),
-    ];
+   return [
+  ProductModel(
+    id: '1',
+    name: 'Wireless Headphones',
+    description: 'Premium noise cancelling headphones.',
+    image: images[0],
+    price: 89.99,
+    barcode: '1234567890123',
+    category: 'Electronics',
+    quantityPerUnit: 1,
+    unitOfMeasurement: 'Piece',
+    createdAt: '2023-10-01T00:00:00.000Z',
+    updatedAt: '2023-10-01T00:00:00.000Z',
+  ),
+  ProductModel(
+    id: '2',
+    name: 'Gaming Mouse',
+    description: 'RGB gaming mouse.',
+    image: images[1],
+    price: 39.99,
+    barcode: '1234567890124',
+    category: 'Electronics',
+    quantityPerUnit: 1,
+    unitOfMeasurement: 'Piece',
+    createdAt: '2023-10-01T00:00:00.000Z',
+    updatedAt: '2023-10-01T00:00:00.000Z',
+  ),
+  ProductModel(
+    id: '3',
+    name: 'Mechanical Keyboard',
+    description: 'Blue switch mechanical keyboard.',
+    image: images[2],
+    price: 79.99,
+    barcode: '1234567890125',
+    category: 'Electronics',
+    quantityPerUnit: 1,
+    unitOfMeasurement: 'Piece',
+    createdAt: '2023-10-01T00:00:00.000Z',
+    updatedAt: '2023-10-01T00:00:00.000Z',
+  ),
+  ProductModel(
+    id: '4',
+    name: 'Office Chair',
+    description: 'Ergonomic office chair.',
+    image: images[3],
+    price: 149.99,
+    barcode: '1234567890126',
+    category: 'Furniture',
+    quantityPerUnit: 1,
+    unitOfMeasurement: 'Piece',
+    createdAt: '2023-10-01T00:00:00.000Z',
+    updatedAt: '2023-10-01T00:00:00.000Z',
+  ),
+];
   }
 
 
