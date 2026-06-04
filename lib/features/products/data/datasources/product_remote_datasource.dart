@@ -19,75 +19,6 @@ final images = [
 
     // Mocked for demonstration
     await Future.delayed(const Duration(seconds: 1));
-<<<<<<< Updated upstream
-    return [
-      ProductModel(
-      id: '123',
-      name: 'Sample Product',
-      description: 'A mock description for our product.',
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-      price: 19.99,
-      barcode: '1234567890123',
-      category: 'Electronics',
-      quantityPerUnit: 1,
-      unitOfMeasurement: 'Piece',
-      createdAt: '2023-10-01T00:00:00.000Z',
-      updatedAt: '2023-10-01T00:00:00.000Z',
-    ),
-          ProductModel(
-      id: '123',
-      name: 'Sample Product',
-      description: 'A mock description for our product.',
-      image: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-      price: 19.99,
-      barcode: '1234567890123',
-      category: 'Electronics',
-      quantityPerUnit: 1,
-      unitOfMeasurement: 'Piece',
-      createdAt: '2023-10-01T00:00:00.000Z',
-      updatedAt: '2023-10-01T00:00:00.000Z',
-    ),
-          ProductModel(
-      id: '123',
-      name: 'Sample Product',
-      description: 'A mock description for our product.',
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-      price: 19.99,
-      barcode: '1234567890123',
-      category: 'Electronics',
-      quantityPerUnit: 1,
-      unitOfMeasurement: 'Piece',
-      createdAt: '2023-10-01T00:00:00.000Z',
-      updatedAt: '2023-10-01T00:00:00.000Z',
-    ),
-          ProductModel(
-      id: '123',
-      name: 'Sample Product',
-      description: 'A mock description for our product.',
-      image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-      price: 19.99,
-      barcode: '1234567890123',
-      category: 'Electronics',
-      quantityPerUnit: 1,
-      unitOfMeasurement: 'Piece',
-      createdAt: '2023-10-01T00:00:00.000Z',
-      updatedAt: '2023-10-01T00:00:00.000Z',
-    ),
-          ProductModel(
-      id: '123',
-      name: 'Sample Product',
-      description: 'A mock description for our product.',
-      image: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-      price: 19.99,
-      barcode: '1234567890123',
-      category: 'Electronics',
-      quantityPerUnit: 1,
-      unitOfMeasurement: 'Piece',
-      createdAt: '2023-10-01T00:00:00.000Z',
-      updatedAt: '2023-10-01T00:00:00.000Z',
-    ),
-    ];
-=======
    return [
   ProductModel(
     id: '1',
@@ -142,7 +73,6 @@ final images = [
     updatedAt: '2023-10-01T00:00:00.000Z',
   ),
 ];
->>>>>>> Stashed changes
   }
 
 
