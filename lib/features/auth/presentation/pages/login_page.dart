@@ -82,6 +82,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     : const Text('Login'),
               ),
             ),
+             const SizedBox(height: 24),
+MouseRegion(
+  cursor: SystemMouseCursors.click,
+  child: InkWell(
+    onTap: () => context.go('/forgot-password'),
+    child: const Text(
+      'Forgot Password?',
+      style: TextStyle(
+        color: Colors.blue,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  ),
+)
           ],
         ),
       ),

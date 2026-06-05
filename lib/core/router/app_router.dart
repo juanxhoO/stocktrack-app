@@ -4,14 +4,25 @@ import '../../features/products/presentation/pages/product_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/products/presentation/pages/list_products.page.dart';
 import '../../features/products/presentation/pages/create_product_page.dart';
+import '../../features/auth/presentation/pages/forgot_password.dart';
+import '../../features/auth/presentation/pages/signup_page.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/products/create',
+  initialLocation: '/forgot-password',
   routes: [
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginPage(),
     ),
+GoRoute(
+      path: '/forgot-password',
+      builder: (context, state) => const ForgotPasswordPage(),
+    ),
+GoRoute(
+      path: '/signup',
+      builder: (context, state) => const SignupPage(),
+    ),
+
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfilePage(),
