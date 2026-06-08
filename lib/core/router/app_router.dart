@@ -8,42 +8,32 @@ import '../../features/auth/presentation/pages/forgot_password.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/forgot-password',
+  initialLocation: '/login',
   routes: [
+    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginPage(),
-    ),
-GoRoute(
       path: '/forgot-password',
       builder: (context, state) => const ForgotPasswordPage(),
     ),
-GoRoute(
-      path: '/signup',
-      builder: (context, state) => const SignupPage(),
-    ),
+    GoRoute(path: '/signup', builder: (context, state) => const SignupPage()),
 
+    GoRoute(path: '/profile', builder: (context, state) => const ProfilePage()),
     GoRoute(
-      path: '/profile',
-      builder: (context, state) => const ProfilePage(),
+      path: '/products',
+      builder: (context, state) => const ProductListPage(),
+      routes: [
+        GoRoute(
+          path: 'create',
+          builder: (context, state) => const ProductCreatePage(),
+        ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return ProductPage(id: id);
+          },
+        ),
+      ],
     ),
-    GoRoute(
-  path: '/products',
-  builder: (context, state) => const ProductListPage(),
-  routes: [
-  GoRoute(
-      path: 'create',
-      builder: (context, state) => const ProductCreatePage(),
-    ),
-    GoRoute(
-      path: ':id',
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return ProductPage(id: id);
-      },
-    ),
-    
-  ],
-),
   ],
 );

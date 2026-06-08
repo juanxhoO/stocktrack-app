@@ -18,10 +18,9 @@ class Appheader extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          color: theme.colorScheme.primary,
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.all(24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 60),
               Container(
@@ -32,7 +31,7 @@ class Appheader extends StatelessWidget {
                 ),
                 child: Icon(
                   icon,
-                  color: Colors.white,
+                  color: Colors.blue,
                   size: 26,
                 ),
               ),
@@ -42,7 +41,7 @@ class Appheader extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: Colors.blue,
                 ),
               ),
             ],

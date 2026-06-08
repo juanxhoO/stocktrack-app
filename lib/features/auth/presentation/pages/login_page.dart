@@ -24,7 +24,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void _onLoginPressed() {
     final email = _emailController.text;
     final password = _passwordController.text;
-    
+
     ref.read(loginControllerProvider.notifier).login(email, password);
   }
 
@@ -38,14 +38,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         context.go('/profile');
       }
     });
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
+      appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (loginState.error != null)
@@ -54,49 +52,118 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 style: const TextStyle(color: Colors.red),
               ),
             const SizedBox(height: 16),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Keeps the column compact
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Aligns label to the left
+
+                  children: [
+                    Text(
+                      'Email',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    TextField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                  ],
+                ),
               ),
-              keyboardType: TextInputType.emailAddress,
             ),
+
             const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Keeps the column compact
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Aligns label to the left
+                  children: [
+                    Text(
+                      'Password',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.blue,
+                      ),
+                    ),
+
+                    TextField(
+                      controller: _passwordController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                      obscureText: true,
+                    ),
+                  ],
+                ),
               ),
-              obscureText: true,
-            ),
+            ), // ✅ comma
             const SizedBox(height: 24),
             SizedBox(
-              width: double.infinity,
               height: 50,
+              width: 300,
               child: ElevatedButton(
                 onPressed: loginState.isLoading ? null : _onLoginPressed,
                 child: loginState.isLoading
                     ? const CircularProgressIndicator()
                     : const Text('Login'),
               ),
+            ), // ✅ comma
+            const SizedBox(height: 24),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 20,
+              children: [
+                Row(
+                  spacing: 5,
+                  children: [
+                    Text('Don\'t have an account?'),
+                    MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: InkWell(
+                        onTap: () => context.go('/signup'),
+                        child: const Text(
+                          'Register',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: InkWell(
+                    onTap: () => context.go('/forgot-password'),
+                    child: const Text(
+                      'Forgot Password',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-             const SizedBox(height: 24),
-MouseRegion(
-  cursor: SystemMouseCursors.click,
-  child: InkWell(
-    onTap: () => context.go('/forgot-password'),
-    child: const Text(
-      'Forgot Password?',
-      style: TextStyle(
-        color: Colors.blue,
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  ),
-)
           ],
         ),
       ),
