@@ -19,7 +19,12 @@ import '../../features/products/domain/usecases/create_product_usecase.dart';
 import '../../features/products/domain/usecases/update_product_usecase.dart';
 import '../../features/products/domain/usecases/get_product_usecase.dart';
 import '../../features/products/domain/usecases/delete_product_usecase.dart';
-
+import '../../features/inventory/domain/usecases/search_inventories_usecase.dart';
+import '../../features/inventory/domain/usecases/create_inventory_usecase.dart';
+import '../../features/inventory/domain/usecases/update_inventory_usecase.dart';
+import '../../features/inventory/data/datasources/inventory_remote_datasource.dart';
+import '../../features/inventory/domain/repositories/inventory_repository.dart';
+import '../../features/inventory/data/repositories/inventory_repository_impl.dart';
 
 // --- Core Providers ---
 
@@ -55,8 +60,9 @@ final loginUseCaseProvider = Provider<LoginUseCase>((ref) {
 
 // --- Profile Feature Providers ---
 
-final profileRemoteDatasourceProvider =
-    Provider<ProfileRemoteDatasource>((ref) {
+final profileRemoteDatasourceProvider = Provider<ProfileRemoteDatasource>((
+  ref,
+) {
   final dioClient = ref.watch(dioClientProvider);
   return ProfileRemoteDatasource(dioClient.dio);
 });
@@ -76,12 +82,11 @@ final updateProfileUseCaseProvider = Provider<UpdateProfileUseCase>((ref) {
   return UpdateProfileUseCase(repository);
 });
 
-
-
 // --- Products Feature Providers ---
 
-final productRemoteDatasourceProvider =
-    Provider<ProductRemoteDatasource>((ref) {
+final productRemoteDatasourceProvider = Provider<ProductRemoteDatasource>((
+  ref,
+) {
   final dioClient = ref.watch(dioClientProvider);
   return ProductRemoteDatasource(dioClient.dio);
 });
@@ -101,7 +106,6 @@ final deleteProductUseCaseProvider = Provider<DeleteProductUseCase>((ref) {
   return DeleteProductUseCase(repository);
 });
 
-
 final searchProductsUseCaseProvider = Provider<SearchProductsUseCase>((ref) {
   final repository = ref.watch(productRepositoryProvider);
   return SearchProductsUseCase(repository);
@@ -112,8 +116,38 @@ final createProductUseCaseProvider = Provider<CreateProductUseCase>((ref) {
   return CreateProductUseCase(repository);
 });
 
-
 final updateProductUseCaseProvider = Provider<UpdateProductUseCase>((ref) {
   final repository = ref.watch(productRepositoryProvider);
   return UpdateProductUseCase(repository);
+});
+
+// --- Inventory Feature Providers ---
+
+final inventoryRemoteDatasourceProvider = Provider<InventoryRemoteDatasource>((
+  ref,
+) {
+  final dioClient = ref.watch(dioClientProvider);
+  return InventoryRemoteDatasource(dioClient.dio);
+});
+
+final inventoryRepositoryProvider = Provider<InventoryRepository>((ref) {
+  final remoteDatasource = ref.watch(inventoryRemoteDatasourceProvider);
+  return InventoryRepositoryImpl(remoteDatasource);
+});
+
+final searchInventoriesUseCaseProvider = Provider<SearchInventoriesUseCase>((
+  ref,
+) {
+  final repository = ref.watch(inventoryRepositoryProvider);
+  return SearchInventoriesUseCase(repository);
+});
+
+final createInventoryUseCaseProvider = Provider<CreateInventoryUseCase>((ref) {
+  final repository = ref.watch(inventoryRepositoryProvider);
+  return CreateInventoryUseCase(repository);
+});
+
+final updateInventoryUseCaseProvider = Provider<UpdateInventoryUseCase>((ref) {
+  final repository = ref.watch(inventoryRepositoryProvider);
+  return UpdateInventoryUseCase(repository);
 });
