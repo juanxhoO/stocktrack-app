@@ -7,9 +7,10 @@ import '../../features/products/presentation/pages/create_product_page.dart';
 import '../../features/auth/presentation/pages/forgot_password.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/inventory/presentation/pages/list_inventory.page.dart';
+import '../../features/dashboard/presentation/pages/dashboard.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/inventory',
+  initialLocation: '/home',
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(
@@ -23,6 +24,8 @@ final appRouter = GoRouter(
       path: '/inventory',
       builder: (context, state) => const InventoryListPage(),
     ),
+
+    GoRoute(path: '/home', builder: (context, state) => const DashboardPage()),
 
     GoRoute(
       path: '/products',
