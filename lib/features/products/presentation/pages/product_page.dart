@@ -56,7 +56,9 @@ class _ProductPageState extends ConsumerState<ProductPage> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                ref.read(productControllerProvider.notifier).loadProduct(widget.id);
+                ref
+                    .read(productControllerProvider.notifier)
+                    .loadProduct(widget.id);
               },
               child: const Text('Retry'),
             ),
@@ -74,7 +76,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
       onRefresh: () async {
         ref.read(productControllerProvider.notifier).loadProduct(widget.id);
       },
-      child: _buildProductCard(products[0])
+      child: _buildProductCard(products[0]),
     );
   }
 
