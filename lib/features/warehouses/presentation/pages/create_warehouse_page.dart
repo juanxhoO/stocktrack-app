@@ -49,11 +49,10 @@ class _WarehouseCreatePageState extends ConsumerState<WarehouseCreatePage> {
     if (!_formKey.currentState!.validate()) return;
 
     await ref
-        .read(productControllerProvider.notifier)
-        .createProduct(
+        .read(warehouseControllerProvider.notifier)
+        .createWarehouse(
           name: _nameController.text.trim(),
           description: _descriptionController.text.trim(),
-          price: double.parse(_priceController.text.trim()),
         );
 
     if (mounted) {
@@ -61,8 +60,6 @@ class _WarehouseCreatePageState extends ConsumerState<WarehouseCreatePage> {
         _products.add({
           'name': _nameController.text.trim(),
           'description': _descriptionController.text.trim(),
-          'price': double.parse(_priceController.text.trim()),
-          'category': _selectedCategory,
         });
         _showForm = false;
         _clearForm();
@@ -72,11 +69,11 @@ class _WarehouseCreatePageState extends ConsumerState<WarehouseCreatePage> {
 
   @override
   Widget build(BuildContext context) {
-    final productState = ref.watch(productControllerProvider);
+    final warehouseState = ref.watch(warehouseControllerProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Products'),
+        title: const Text('Warehouses'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/products'),
@@ -177,11 +174,11 @@ class _WarehouseCreatePageState extends ConsumerState<WarehouseCreatePage> {
                     ),
 
                     const SizedBox(height: 16),
-                    if (productState.error != null)
+                    if (warehouseState.error != null)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: Text(
-                          productState.error!,
+                          warehouseState.error!,
                           style: const TextStyle(color: Colors.red),
                         ),
                       ),
@@ -189,8 +186,8 @@ class _WarehouseCreatePageState extends ConsumerState<WarehouseCreatePage> {
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton.icon(
-                        onPressed: productState.isLoading ? null : _submit,
-                        icon: productState.isLoading
+                        onPressed: warehouseState.isLoading ? null : _submit,
+                        icon: warehouseState.isLoading
                             ? const SizedBox(
                                 width: 18,
                                 height: 18,
@@ -200,7 +197,9 @@ class _WarehouseCreatePageState extends ConsumerState<WarehouseCreatePage> {
                               )
                             : const Icon(Icons.check),
                         label: Text(
-                          productState.isLoading ? 'Saving...' : 'Save product',
+                          warehouseState.isLoading
+                              ? 'Saving...'
+                              : 'Save warehouse',
                         ),
                       ),
                     ),

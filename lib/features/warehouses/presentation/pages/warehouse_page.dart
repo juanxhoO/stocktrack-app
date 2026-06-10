@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../controllers/product_controller.dart';
+import '../controllers/warehouse_controller.dart';
 
 class WarehousePage extends ConsumerStatefulWidget {
   final String id;
@@ -15,15 +15,15 @@ class _WarehousePageState extends ConsumerState<WarehousePage> {
   @override
   void initState() {
     super.initState();
-    debugPrint('ProductPage ID: ${widget.id}');
+    debugPrint('WarehousePage ID: ${widget.id}');
     Future.microtask(() {
-      ref.read(productControllerProvider.notifier).loadProduct(widget.id);
+      ref.read(warehouseControllerProvider.notifier).loadWarehouse(widget.id);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final productState = ref.watch(productControllerProvider);
+    final warehouseState = ref.watch(warehouseControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products'),
@@ -35,30 +35,30 @@ class _WarehousePageState extends ConsumerState<WarehousePage> {
           ),
         ],
       ),
-      body: _buildBody(productState),
+      body: _buildBody(warehouseState),
     );
   }
 
-  Widget _buildBody(ProductState productState) {
-    if (productState.isLoading) {
+  Widget _buildBody(WarehouseState warehouseState) {
+    if (warehouseState.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (productState.error != null) {
+    if (warehouseState.error != null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              productState.error!,
+              warehouseState.error!,
               style: const TextStyle(color: Colors.red),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 ref
-                    .read(productControllerProvider.notifier)
-                    .loadProduct(widget.id);
+                    .read(warehouseControllerProvider.notifier)
+                    .loadWarehouse(widget.id);
               },
               child: const Text('Retry'),
             ),
@@ -67,20 +67,20 @@ class _WarehousePageState extends ConsumerState<WarehousePage> {
       );
     }
 
-    final products = productState.products;
-    if (products == null || products.isEmpty) {
-      return const Center(child: Text('No products found'));
+    final warehouses = warehouseState.warehouses;
+    if (warehouses == null || warehouses.isEmpty) {
+      return const Center(child: Text('No warehouses found'));
     }
 
     return RefreshIndicator(
       onRefresh: () async {
-        ref.read(productControllerProvider.notifier).loadProduct(widget.id);
+        ref.read(warehouseControllerProvider.notifier).loadWarehouse(widget.id);
       },
-      child: _buildProductCard(products[0]),
+      child: _buildWarehouseCard(warehouses[0]),
     );
   }
 
-  Widget _buildProductCard(product) {
+  Widget _buildWarehouseCard(product) {
     return Material(
       color: Colors.transparent,
       child: InkWell(

@@ -37,7 +37,10 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: ':id',
-          builder: (context, state) => const WarehousePage(),
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return WarehousePage(id: id);
+          },
         ),
       ],
     ),
@@ -55,6 +58,23 @@ final appRouter = GoRouter(
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             return ProductPage(id: id);
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/warehouses',
+      builder: (context, state) => const WarehouseListPage(),
+      routes: [
+        GoRoute(
+          path: 'create',
+          builder: (context, state) => const WarehouseCreatePage(),
+        ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return WarehousePage(id: id);
           },
         ),
       ],
