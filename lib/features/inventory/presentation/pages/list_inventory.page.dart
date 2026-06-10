@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stocktrack_app/shared/widgets/sidebar.dart';
 import '../controllers/inventory_controller.dart';
 
 class InventoryListPage extends ConsumerStatefulWidget {
@@ -24,9 +25,17 @@ class _InventoryListPageState extends ConsumerState<InventoryListPage> {
   @override
   Widget build(BuildContext context) {
     final inventoryState = ref.watch(inventoryControllerProvider);
+    final theme = Theme.of(context);
+    final isDesktop = MediaQuery.of(context).size.width >= 400;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Inventory')),
+      drawer: const AppSidebar(),
+      appBar: AppBar(
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        title: const Text('Inventory Stock App'),
+      ),
       body: _buildBody(inventoryState),
     );
   }
@@ -63,19 +72,29 @@ class _InventoryListPageState extends ConsumerState<InventoryListPage> {
     if (inventoryList == null || inventoryList.isEmpty) {
       return const Center(child: Text('No inventories found'));
     }
+    final isDesktop = MediaQuery.of(context).size.width >= 400;
 
     return RefreshIndicator(
       onRefresh: () async {
         ref.read(inventoryControllerProvider.notifier).searchInventories();
       },
-      child: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: inventoryList.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (context, index) {
-          final inventory = inventoryList[index];
-          return _buildProductCard(inventory);
-        },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (isDesktop) const SizedBox(width: 280, child: AppSidebar()),
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: inventoryList.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, index) {
+                final inventory = inventoryList[index];
+                return _buildProductCard(inventory);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
