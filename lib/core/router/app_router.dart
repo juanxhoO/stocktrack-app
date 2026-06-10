@@ -8,6 +8,9 @@ import '../../features/auth/presentation/pages/forgot_password.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/inventory/presentation/pages/list_inventory.page.dart';
 import '../../features/dashboard/presentation/pages/dashboard.dart';
+import '../../features/warehouses/presentation/pages/list_warehouses.page.dart';
+import '../../features/warehouses/presentation/pages/warehouse_page.dart';
+import '../../features/warehouses/presentation/pages/create_warehouse_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/home',
@@ -24,9 +27,21 @@ final appRouter = GoRouter(
       path: '/inventory',
       builder: (context, state) => const InventoryListPage(),
     ),
-
+    GoRoute(
+      path: '/warehouses',
+      builder: (context, state) => const WarehouseListPage(),
+      routes: [
+        GoRoute(
+          path: 'create',
+          builder: (context, state) => const WarehouseCreatePage(),
+        ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) => const WarehousePage(),
+        ),
+      ],
+    ),
     GoRoute(path: '/home', builder: (context, state) => const DashboardPage()),
-
     GoRoute(
       path: '/products',
       builder: (context, state) => const ProductListPage(),
