@@ -2,12 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../controllers/warehouse_controller.dart';
+import 'package:stocktrack_app/shared/widgets/sidebar.dart';
+import 'package:stocktrack_app/shared/widgets/table.dart';
 
 class WarehouseListPage extends ConsumerStatefulWidget {
   const WarehouseListPage({super.key});
 
   @override
   ConsumerState<WarehouseListPage> createState() => _WarehouseListPageState();
+}
+
+class DashboardCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final IconData icon;
+
+  const DashboardCard({
+    super.key,
+    required this.title,
+    required this.value,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            Icon(icon, size: 32),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(title),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
@@ -23,20 +67,23 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final warehouseState = ref.watch(warehouseControllerProvider);
+    final isDesktop = MediaQuery.of(context).size.width >= 1024;
 
     return Scaffold(
+      drawer: isDesktop ? null : const AppSidebar(),
       appBar: AppBar(
-        title: const Text('Warehouses'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            mouseCursor: SystemMouseCursors.click,
-            onPressed: () => context.go('/warehouses/create'),
-          ),
+        title: const Text('Dashboard'),
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: Colors.white,
+      ),
+      body: Row(
+        children: [
+          if (isDesktop) const SizedBox(width: 280, child: AppSidebar()),
+          Expanded(child: _buildBody(warehouseState)),
         ],
       ),
-      body: _buildBody(warehouseState),
     );
   }
 
@@ -69,99 +116,109 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
     }
 
     final warehouses = warehouseState.warehouses;
+
     if (warehouses == null || warehouses.isEmpty) {
       return const Center(child: Text('No warehouses found'));
     }
 
     return RefreshIndicator(
       onRefresh: () async {
-        ref.read(warehouseControllerProvider.notifier).searchWarehouses();
+        await ref.read(warehouseControllerProvider.notifier).searchWarehouses();
       },
-      child: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: warehouses.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (context, index) {
-          final warehouse = warehouses[index];
-          return _buildWarehouseCard(warehouse);
-        },
-      ),
-    );
-  }
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Warehouses Overview',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
 
-  Widget _buildWarehouseCard(warehouse) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => context.go('/warehouses/${warehouse.id}'),
-        mouseCursor: SystemMouseCursors.click,
-        hoverColor: Colors.blue.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade200),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              // Thumbnail
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: warehouse.image != null
-                    ? Image.network(
-                        warehouse.image!,
-                        width: 64,
-                        height: 64,
-                        fit: BoxFit.cover,
-                      )
-                    : Container(
-                        width: 64,
-                        height: 64,
-                        color: Colors.grey.shade100,
-                        child: const Icon(
-                          Icons.inventory_2_outlined,
-                          color: Colors.grey,
-                        ),
-                      ),
-              ),
-              const SizedBox(width: 12),
-              // Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      warehouse.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                      ),
-                    ),
+            const SizedBox(height: 24),
 
-                    Text(
-                      "ID: " + warehouse.id,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                      ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                int crossAxisCount = 1;
+
+                if (constraints.maxWidth >= 1200) {
+                  crossAxisCount = 4;
+                } else if (constraints.maxWidth >= 800) {
+                  crossAxisCount = 2;
+                }
+
+                return GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 2.2,
+                  children: const [
+                    DashboardCard(
+                      title: 'Products',
+                      value: '1,248',
+                      icon: Icons.inventory_2,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      warehouse.description ?? '',
-                      style: TextStyle(
-                        color: Colors.grey.shade500,
-                        fontSize: 13,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    DashboardCard(
+                      title: 'Warehouses',
+                      value: '12',
+                      icon: Icons.warehouse,
+                    ),
+                    DashboardCard(
+                      title: 'Low Stock',
+                      value: '18',
+                      icon: Icons.warning_amber,
+                    ),
+                    DashboardCard(
+                      title: 'Inventory Value',
+                      value: '\$245,000',
+                      icon: Icons.attach_money,
                     ),
                   ],
-                ),
-              ),
-              const SizedBox(width: 12),
-            ],
-          ),
+                );
+              },
+            ),
+
+            const SizedBox(height: 32),
+
+            Text('Warehouses', style: Theme.of(context).textTheme.titleLarge),
+
+            const SizedBox(height: 16),
+            AppTable(
+              columns: const [
+                AppTableColumn(label: 'Name'),
+                AppTableColumn(label: 'Location'),
+                AppTableColumn(label: 'Status'),
+                AppTableColumn(label: 'Capacity'),
+                AppTableColumn(label: 'Actions'),
+              ],
+              rows: warehouses.map((warehouse) {
+                return AppTableRow(
+                  cells: [
+                    Text(warehouse.name),
+                    Text('${warehouse.city}, ${warehouse.state}'),
+                    Text(warehouse.status == true ? 'Active' : 'Inactive'),
+                    Text('${warehouse.capacity} items'),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.visibility),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }).toList(),
+            ),
+          ],
         ),
       ),
     );

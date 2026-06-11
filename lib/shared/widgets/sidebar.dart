@@ -22,11 +22,7 @@ class NavItem {
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const _mainItems = [
-  NavItem(
-    label: 'Dashboard',
-    icon: Icons.dashboard_rounded,
-    route: '/dashboard',
-  ),
+  NavItem(label: 'Dashboard', icon: Icons.dashboard_rounded, route: '/home'),
   NavItem(
     label: 'Inventory',
     icon: Icons.inventory_2_rounded,
