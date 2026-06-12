@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../controllers/warehouse_controller.dart';
 import 'package:stocktrack_app/shared/widgets/sidebar.dart';
 import 'package:stocktrack_app/shared/widgets/table.dart';
+import 'package:stocktrack_app/shared/widgets/map.dart';
 
 class WarehouseListPage extends ConsumerStatefulWidget {
   const WarehouseListPage({super.key});
@@ -30,6 +31,7 @@ class DashboardCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(icon, size: 32),
             const SizedBox(width: 16),
@@ -79,6 +81,7 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
         foregroundColor: Colors.white,
       ),
       body: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (isDesktop) const SizedBox(width: 280, child: AppSidebar()),
           Expanded(child: _buildBody(warehouseState)),
@@ -142,10 +145,8 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
               builder: (context, constraints) {
                 int crossAxisCount = 1;
 
-                if (constraints.maxWidth >= 1200) {
+                if (constraints.maxWidth >= 800) {
                   crossAxisCount = 4;
-                } else if (constraints.maxWidth >= 800) {
-                  crossAxisCount = 2;
                 }
 
                 return GridView.count(
@@ -154,7 +155,7 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
                   crossAxisCount: crossAxisCount,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio: 2.2,
+                  childAspectRatio: 1.6,
                   children: const [
                     DashboardCard(
                       title: 'Products',
@@ -215,6 +216,16 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
                       ],
                     ),
                   ],
+                );
+              }).toList(),
+            ),
+            AppMap(
+              markers: warehouses.map((warehouse) {
+                return AppMapMarker(
+                  id: warehouse.id,
+                  title: warehouse.name,
+                  latitude: 48.8584,
+                  longitude: 2.2945,
                 );
               }).toList(),
             ),
