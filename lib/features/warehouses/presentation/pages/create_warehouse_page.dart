@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../controllers/warehouse_controller.dart';
+import 'package:stocktrack_app/shared/widgets/sidebar.dart';
 
 class WarehouseCreatePage extends ConsumerStatefulWidget {
   const WarehouseCreatePage({super.key});
@@ -63,232 +64,136 @@ class _WarehouseCreatePageState extends ConsumerState<WarehouseCreatePage> {
   @override
   Widget build(BuildContext context) {
     final productState = ref.watch(warehouseControllerProvider);
+    final isDesktop = MediaQuery.of(context).size.width >= 1024;
 
     return Scaffold(
+      drawer: isDesktop ? null : const AppSidebar(),
       appBar: AppBar(
-        title: const Text('Products'),
+        title: const Text('Warehouses'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/products'),
+          onPressed: () => context.go('/warehouses'),
         ),
         actions: [
           if (!_showForm)
             IconButton(
               icon: const Icon(Icons.add),
-              tooltip: 'Add product',
+              tooltip: 'Add warehouse',
               onPressed: () => setState(() => _showForm = true),
             ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ── Form ──────────────────────────────────────
-            Row(
-              children: [
-                const Text(
-                  'New product',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                const Spacer(),
-                TextButton(
-                  onPressed: () => setState(() {
-                    _showForm = false;
-                    _clearForm();
-                  }),
-                  child: const Text('Cancel'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Form(
-              key: _formKey,
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+
+        children: [
+          if (isDesktop) const SizedBox(width: 280, child: AppSidebar()),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+
                 children: [
-                  _buildField(
-                    controller: _nameController,
-                    label: 'Name',
-                    hint: 'Product name',
-                    icon: Icons.label_outline,
-                    validator: (v) =>
-                        v == null || v.isEmpty ? 'Name is required' : null,
+                  Row(
+                    children: [
+                      const Text(
+                        'New warehouse',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          context.go('/warehouses');
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  _buildField(
-                    controller: _descriptionController,
-                    label: 'Description',
-                    hint: 'Short product description',
-                    icon: Icons.notes_outlined,
-                    maxLines: 3,
-                  ),
-                  const SizedBox(height: 16),
-                  _buildField(
-                    controller: _priceController,
-                    label: 'Price',
-                    hint: '0.00',
-                    icon: Icons.attach_money_outlined,
-                    keyboardType: TextInputType.number,
-                    validator: (v) {
-                      if (v == null || v.isEmpty) return 'Price is required';
-                      if (double.tryParse(v) == null) {
-                        return 'Enter a valid number';
-                      }
-                      return null;
-                    },
-                  ),
+
                   const SizedBox(height: 16),
 
-                  // // ── Category dropdown ──────────────────
-                  // DropdownButtonFormField<String>(
-                  //   value: _selectedCategory,
-                  //   decoration: InputDecoration(
-                  //     labelText: 'Category',
-                  //     hintText: 'Select a category',
-                  //     prefixIcon: const Icon(Icons.category_outlined),
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(12),
-                  //     ),
-                  //     enabledBorder: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(12),
-                  //       borderSide: BorderSide(color: Colors.grey.shade200),
-                  //     ),
-                  //   ),
-                  //   items: _categories
-                  //       .map(
-                  //         (c) => DropdownMenuItem(value: c, child: Text(c)),
-                  //       )
-                  //       .toList(),
-                  //   onChanged: (value) =>
-                  //       setState(() => _selectedCategory = value),
-                  //   validator: (v) => v == null ? 'Select a category' : null,
-                  // ),
-                  const SizedBox(height: 16),
-                  if (productState.error != null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Text(
-                        productState.error!,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton.icon(
-                      onPressed: productState.isLoading ? null : _submit,
-                      icon: productState.isLoading
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.check),
-                      label: Text(
-                        productState.isLoading ? 'Saving...' : 'Save product',
-                      ),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        _buildField(
+                          controller: _nameController,
+                          label: 'Name',
+                          hint: 'Warehouse name',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                        _buildField(
+                          controller: _nameController,
+                          label: 'Name',
+                          hint: 'Warehouse Code',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                        _buildField(
+                          controller: _nameController,
+                          label: 'Street Address',
+                          hint: 'Street Address',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                        _buildField(
+                          controller: _nameController,
+                          label: 'City',
+                          hint: 'City',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                        _buildField(
+                          controller: _nameController,
+                          label: 'State/Province',
+                          hint: 'State/Province',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                        _buildField(
+                          controller: _nameController,
+                          label: 'Postal Code',
+                          hint: 'Postal Code',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                        _buildField(
+                          controller: _nameController,
+                          label: 'Phone Number',
+                          hint: 'Phone Number',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                        _buildField(
+                          controller: _nameController,
+                          label: 'Email',
+                          hint: 'Email',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                        _buildField(
+                          controller: _nameController,
+                          label: 'TOTAL AREA (SQ.FT)',
+                          hint: 'Total Area',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                        _buildField(
+                          controller: _nameController,
+                          label: 'Capacity',
+                          hint: 'Capacity',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                        _buildField(
+                          controller: _nameController,
+                          label: 'Manager',
+                          hint: 'Manager Name',
+                          icon: Icons.warehouse_outlined,
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
-            const Divider(),
-            const SizedBox(height: 8),
-
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _products.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final product = _products[index];
-                return Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade200),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 42,
-                        height: 42,
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          Icons.inventory_2_outlined,
-                          color: Colors.blue.shade400,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              product['name'],
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            if ((product['description'] as String).isNotEmpty)
-                              Text(
-                                product['description'],
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade600,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            if (product['category'] != null)
-                              Container(
-                                margin: const EdgeInsets.only(top: 4),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue.shade50,
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                                child: Text(
-                                  product['category'],
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: Colors.blue.shade700,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        '\$${(product['price'] as double).toStringAsFixed(2)}',
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(width: 8),
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete_outline,
-                          color: Colors.red.shade300,
-                          size: 20,
-                        ),
-                        onPressed: () =>
-                            setState(() => _products.removeAt(index)),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

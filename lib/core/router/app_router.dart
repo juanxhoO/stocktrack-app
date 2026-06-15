@@ -13,7 +13,7 @@ import '../../features/warehouses/presentation/pages/warehouse_page.dart';
 import '../../features/warehouses/presentation/pages/create_warehouse_page.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/warehouses',
+  initialLocation: '/warehouses/create',
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(
