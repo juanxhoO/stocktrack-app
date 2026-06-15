@@ -184,7 +184,21 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
 
             const SizedBox(height: 32),
 
-            Text('Warehouses', style: Theme.of(context).textTheme.titleLarge),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Warehouses',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                FilledButton(
+                  onPressed: () {
+                    context.go('/warehouses/create');
+                  },
+                  child: const Text('Create Warehouse'),
+                ),
+              ],
+            ),
 
             const SizedBox(height: 16),
             AppTable(
@@ -211,7 +225,9 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.edit),
-                          onPressed: () {},
+                          onPressed: () {
+                            context.go('/warehouses/edit/${warehouse.id}');
+                          },
                         ),
                       ],
                     ),
