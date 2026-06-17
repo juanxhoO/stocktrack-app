@@ -13,7 +13,7 @@ import '../../features/category/presentation/pages/category_page.dart';
 import '../../features/category/presentation/pages/create_category_page.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/profile',
+  initialLocation: '/inventory',
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(
@@ -62,6 +62,12 @@ final appRouter = GoRouter(
         ),
       ],
     ),
+
+    GoRoute(
+      path: '/inventory',
+      builder: (context, state) => const CategoryListPage(),
+    ),
+
     GoRoute(
       path: '/categories',
       builder: (context, state) => const CategoryListPage(),
