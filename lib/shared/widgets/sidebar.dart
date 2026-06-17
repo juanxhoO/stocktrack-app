@@ -35,11 +35,6 @@ const _mainItems = [
   NavItem(label: 'Inventory', icon: Icons.inventory_2_rounded),
 
   NavItem(
-    label: 'Products',
-    icon: Icons.shopping_bag_outlined,
-    route: '/products',
-  ),
-  NavItem(
     label: 'Categories',
     icon: Icons.category_outlined,
     route: '/categories',
