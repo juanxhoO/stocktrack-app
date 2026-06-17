@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/product.dart';
-import '../../../../shared/providers/dependencies.dart';
+import '../../product_providers.dart';
 
 class ProductState {
   final bool isLoading;

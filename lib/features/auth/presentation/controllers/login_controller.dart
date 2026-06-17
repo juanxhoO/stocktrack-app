@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../shared/providers/dependencies.dart';
+import '../../auth_providers.dart';
 
 class LoginState {
   final bool isLoading;

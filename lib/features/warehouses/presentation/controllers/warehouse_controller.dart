@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/warehouse.dart';
-import '../../../../shared/providers/dependencies.dart';
+import '../../warehouse_providers.dart';
 
 class WarehouseState {
   final bool isLoading;
