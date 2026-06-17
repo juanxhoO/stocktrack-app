@@ -1,74 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-// ─── Model ────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// MODEL
+// ─────────────────────────────────────────────────────────────
 
 class NavItem {
   final String label;
   final IconData icon;
-  final String route;
+  final String? route;
   final int? badge;
   final Color? badgeColor;
+  final List<NavItem> children;
 
   const NavItem({
     required this.label,
     required this.icon,
-    required this.route,
+    this.route,
     this.badge,
     this.badgeColor,
+    this.children = const [],
   });
+
+  bool get hasChildren => children.isNotEmpty;
 }
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────
 
 const _mainItems = [
   NavItem(label: 'Dashboard', icon: Icons.dashboard_rounded, route: '/home'),
+
+  NavItem(label: 'Inventory', icon: Icons.inventory_2_rounded),
+
   NavItem(
-    label: 'Inventory',
-    icon: Icons.inventory_2_rounded,
-    route: '/inventory',
-    badge: 124,
+    label: 'Products',
+    icon: Icons.shopping_bag_outlined,
+    route: '/products',
   ),
   NavItem(
     label: 'Categories',
-    icon: Icons.inventory_2_rounded,
+    icon: Icons.category_outlined,
     route: '/categories',
-    badge: 124,
   ),
   NavItem(
     label: 'Warehouses',
-    icon: Icons.category_rounded,
+    icon: Icons.warehouse_outlined,
     route: '/warehouses',
   ),
-
-  NavItem(label: 'Products', icon: Icons.category_rounded, route: '/products'),
   NavItem(
-    label: 'Suppliers',
-    icon: Icons.local_shipping_rounded,
-    route: '/suppliers',
+    label: 'Users',
+    icon: Icons.people_rounded,
+    children: [
+      NavItem(
+        label: 'Administrators',
+        icon: Icons.admin_panel_settings_outlined,
+        route: '/users/admins',
+      ),
+      NavItem(
+        label: 'Suppliers',
+        icon: Icons.local_shipping_outlined,
+        route: '/users/suppliers',
+      ),
+      NavItem(
+        label: 'Employees',
+        icon: Icons.badge_outlined,
+        route: '/users/employees',
+      ),
+      NavItem(
+        label: 'Customers',
+        icon: Icons.person_outline,
+        route: '/users/customers',
+      ),
+    ],
   ),
 ];
 
 const _movItems = [
   NavItem(
-    label: 'Entradas',
+    label: 'Entries',
     icon: Icons.arrow_downward_rounded,
     route: '/entries',
     badge: 3,
     badgeColor: Color(0xFF0F6E56),
   ),
-  NavItem(label: 'Salidas', icon: Icons.arrow_upward_rounded, route: '/exits'),
-  NavItem(label: 'Ajustes', icon: Icons.sync_rounded, route: '/adjustments'),
+  NavItem(label: 'Exits', icon: Icons.arrow_upward_rounded, route: '/exits'),
+  NavItem(
+    label: 'Adjustments',
+    icon: Icons.sync_rounded,
+    route: '/adjustments',
+  ),
 ];
 
 const _reportItems = [
+  NavItem(label: 'Statistics', icon: Icons.bar_chart_rounded, route: '/stats'),
   NavItem(
-    label: 'Estadísticas',
-    icon: Icons.bar_chart_rounded,
-    route: '/stats',
-  ),
-  NavItem(
-    label: 'Stock bajo',
+    label: 'Low Stock',
     icon: Icons.warning_amber_rounded,
     route: '/low-stock',
     badge: 7,
@@ -77,17 +105,16 @@ const _reportItems = [
 ];
 
 const _systemItems = [
-  NavItem(
-    label: 'Configuración',
-    icon: Icons.settings_rounded,
-    route: '/settings',
-  ),
+  NavItem(label: 'Settings', icon: Icons.settings_rounded, route: '/settings'),
 ];
 
-// ─── Sidebar ──────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// SIDEBAR
+// ─────────────────────────────────────────────────────────────
 
 class AppSidebar extends StatelessWidget {
   const AppSidebar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -95,21 +122,30 @@ class AppSidebar extends StatelessWidget {
       child: Column(
         children: [
           const _SidebarHeader(),
+
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 8),
               children: [
-                _NavSection(label: 'Principal', items: _mainItems),
-                const Divider(height: 1, indent: 16, endIndent: 16),
-                _NavSection(label: 'Movimientos', items: _movItems),
-                const Divider(height: 1, indent: 16, endIndent: 16),
-                _NavSection(label: 'Reportes', items: _reportItems),
-                const Divider(height: 1, indent: 16, endIndent: 16),
-                _NavSection(label: 'Sistema', items: _systemItems),
+                _NavSection(label: 'Main', items: _mainItems),
+
+                const Divider(),
+
+                _NavSection(label: 'Movements', items: _movItems),
+
+                const Divider(),
+
+                _NavSection(label: 'Reports', items: _reportItems),
+
+                const Divider(),
+
+                _NavSection(label: 'System', items: _systemItems),
               ],
             ),
           ),
+
           const Divider(height: 1),
+
           const _UserFooter(),
         ],
       ),
@@ -117,7 +153,9 @@ class AppSidebar extends StatelessWidget {
   }
 }
 
-// ─── Header ───────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// HEADER
+// ─────────────────────────────────────────────────────────────
 
 class _SidebarHeader extends StatelessWidget {
   const _SidebarHeader();
@@ -127,44 +165,30 @@ class _SidebarHeader extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: const Color(0xFF1565C0),
-      padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
-      child: Column(
+      padding: const EdgeInsets.all(20),
+      child: const Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-            ),
-            child: const Icon(
-              Icons.inventory_2_rounded,
-              color: Colors.white,
-              size: 28,
-            ),
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'Inventario Pro',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 2),
+          Icon(Icons.inventory_2_rounded, color: Colors.white, size: 40),
+          SizedBox(height: 12),
           Text(
-            'v1.0.0',
+            'StockTrack',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.65),
-              fontSize: 12,
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
+          SizedBox(height: 4),
+          Text('v1.0.0', style: TextStyle(color: Colors.white70)),
         ],
       ),
     );
   }
 }
 
-// ─── Nav Section ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// SECTION
+// ─────────────────────────────────────────────────────────────
 
 class _NavSection extends StatelessWidget {
   final String label;
@@ -174,87 +198,118 @@ class _NavSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentRoute = ModalRoute.of(context)?.settings.name;
+    final currentLocation = GoRouterState.of(context).uri.toString();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 16, 4),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
           child: Text(
             label.toUpperCase(),
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.4),
-              letterSpacing: 0.8,
+              color: Colors.grey.shade600,
+              letterSpacing: 1,
             ),
           ),
         ),
+
         ...items.map(
-          (item) => _NavTile(item: item, isActive: currentRoute == item.route),
+          (item) => _NavTile(item: item, currentRoute: currentLocation),
         ),
       ],
     );
   }
 }
 
-// ─── Nav Tile ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// NAV ITEM
+// ─────────────────────────────────────────────────────────────
 
 class _NavTile extends StatelessWidget {
   final NavItem item;
-  final bool isActive;
+  final String currentRoute;
 
-  const _NavTile({required this.item, required this.isActive});
+  const _NavTile({required this.item, required this.currentRoute});
 
   @override
   Widget build(BuildContext context) {
     const activeColor = Color(0xFF1565C0);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
-      child: ListTile(
-        tileColor: isActive ? const Color(0xFFE3F0FC) : Colors.transparent,
-        leading: Icon(
-          item.icon,
-          size: 20,
-          color: isActive
-              ? activeColor
-              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+
+    if (item.hasChildren) {
+      return ExpansionTile(
+        leading: Icon(item.icon, color: activeColor),
+        title: Text(item.label),
+        childrenPadding: const EdgeInsets.only(left: 20),
+        children: item.children.map((child) {
+          final active = currentRoute == child.route;
+
+          return ListTile(
+            selected: active,
+            leading: Icon(
+              child.icon,
+              size: 18,
+              color: active ? activeColor : null,
+            ),
+            title: Text(
+              child.label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: active ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+            onTap: () {
+              if (child.route != null) {
+                context.go(child.route!);
+              }
+            },
+          );
+        }).toList(),
+      );
+    }
+
+    final active = currentRoute == item.route;
+
+    return ListTile(
+      selected: active,
+      leading: Icon(item.icon, color: active ? activeColor : null),
+      title: Text(
+        item.label,
+        style: TextStyle(
+          fontWeight: active ? FontWeight.w600 : FontWeight.normal,
         ),
-        title: Text(
-          item.label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-            color: isActive
-                ? activeColor
-                : Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-        trailing: item.badge != null
-            ? Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                decoration: BoxDecoration(
-                  color: item.badgeColor ?? activeColor,
-                ),
-                child: Text(
-                  '${item.badge}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              )
-            : null,
-        onTap: () => context.go(item.route),
       ),
+      trailing: item.badge != null
+          ? Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: item.badgeColor ?? activeColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '${item.badge}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          : null,
+      onTap: () {
+        if (item.route != null) {
+          context.go(item.route!);
+        }
+      },
     );
   }
 }
 
-// ─── Footer ───────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// FOOTER
+// ─────────────────────────────────────────────────────────────
 
 class _UserFooter extends StatelessWidget {
   const _UserFooter();
@@ -262,31 +317,18 @@ class _UserFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => context.go('/profile'),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      leading: CircleAvatar(
-        radius: 18,
-        backgroundColor: const Color(0xFFE3F0FC),
-        child: Text(
-          'JD',
-          style: TextStyle(
-            color: Color(0xFF1565C0),
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-      title: const Text(
-        'Juan Díaz',
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-      ),
-      subtitle: const Text('Administrador', style: TextStyle(fontSize: 12)),
+      leading: const CircleAvatar(child: Text('JD')),
+      title: const Text('Juan Díaz'),
+      subtitle: const Text('Administrator'),
       trailing: IconButton(
-        icon: const Icon(Icons.logout_rounded, size: 20),
+        icon: const Icon(Icons.logout),
         onPressed: () {
-          /* handle logout */
+          // logout
         },
       ),
+      onTap: () {
+        context.go('/profile');
+      },
     );
   }
 }

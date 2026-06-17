@@ -16,7 +16,7 @@ import '../../features/category/presentation/pages/category_page.dart';
 import '../../features/category/presentation/pages/create_category_page.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/categories/1',
+  initialLocation: '/profile',
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(
