@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/profile.dart';
-import '../../../../shared/providers/dependencies.dart';
+import '../../profile_providers.dart';
 
 class ProfileState {
   final bool isLoading;

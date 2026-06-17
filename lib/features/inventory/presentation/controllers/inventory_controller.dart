@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/inventory.dart';
-import '../../../../shared/providers/dependencies.dart';
+import '../../inventory_providers.dart';
 
 class InventoryState {
   final bool isLoading;

@@ -11,9 +11,12 @@ import '../../features/dashboard/presentation/pages/dashboard.dart';
 import '../../features/warehouses/presentation/pages/list_warehouses.page.dart';
 import '../../features/warehouses/presentation/pages/warehouse_page.dart';
 import '../../features/warehouses/presentation/pages/create_warehouse_page.dart';
+import '../../features/category/presentation/pages/list_categories.page.dart';
+import '../../features/category/presentation/pages/category_page.dart';
+import '../../features/category/presentation/pages/create_category_page.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/warehouses/create',
+  initialLocation: '/categories/1',
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(
@@ -75,6 +78,23 @@ final appRouter = GoRouter(
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             return WarehousePage(id: id);
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/categories',
+      builder: (context, state) => const CategoryListPage(),
+      routes: [
+        GoRoute(
+          path: 'create',
+          builder: (context, state) => const CategoryCreatePage(),
+        ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return CategoryPage(id: id);
           },
         ),
       ],
