@@ -11,9 +11,12 @@ import '../../features/warehouses/presentation/pages/create_warehouse_page.dart'
 import '../../features/category/presentation/pages/list_categories.page.dart';
 import '../../features/category/presentation/pages/category_page.dart';
 import '../../features/category/presentation/pages/create_category_page.dart';
+import '../../features/supplier/presentation/pages/list_suppliers.page.dart';
+import '../../features/supplier/presentation/pages/supplier_page.dart';
+import '../../features/supplier/presentation/pages/create_supplier_page.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/inventory',
+  initialLocation: '/suppliers/:1',
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(
@@ -64,11 +67,6 @@ final appRouter = GoRouter(
     ),
 
     GoRoute(
-      path: '/inventory',
-      builder: (context, state) => const CategoryListPage(),
-    ),
-
-    GoRoute(
       path: '/categories',
       builder: (context, state) => const CategoryListPage(),
       routes: [
@@ -81,6 +79,24 @@ final appRouter = GoRouter(
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             return CategoryPage(id: id);
+          },
+        ),
+      ],
+    ),
+
+    GoRoute(
+      path: '/suppliers',
+      builder: (context, state) => const SupplierListPage(),
+      routes: [
+        GoRoute(
+          path: 'create',
+          builder: (context, state) => const SupplierCreatePage(),
+        ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return SupplierPage(id: id);
           },
         ),
       ],

@@ -45,6 +45,11 @@ const _mainItems = [
     route: '/warehouses',
   ),
   NavItem(
+    label: 'Suppliers',
+    icon: Icons.support_agent_rounded,
+    route: '/suppliers',
+  ),
+  NavItem(
     label: 'Users',
     icon: Icons.people_rounded,
     children: [
