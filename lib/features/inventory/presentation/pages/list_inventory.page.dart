@@ -152,34 +152,6 @@ class _InventoryListPageState extends ConsumerState<InventoryListPage> {
                     const SizedBox(height: 16),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 400,
-                      height: 35,
-                      child: AppSearchInput(
-                        hintText: 'Search Category...',
-                        onChanged: (value) {},
-                      ),
-                    ),
-                    SizedBox(
-                      width: 200,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Export'),
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    SizedBox(
-                      width: 200,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Add Product'),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -219,6 +191,40 @@ class _InventoryListPageState extends ConsumerState<InventoryListPage> {
                 );
               },
             ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 400,
+                  height: 35,
+                  child: AppSearchInput(
+                    hintText: 'Search Category...',
+                    onChanged: (value) {},
+                  ),
+                ),
+
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        child: const Text('Export'),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    SizedBox(
+                      width: 200,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        child: const Text('Add Product'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,9 +234,10 @@ class _InventoryListPageState extends ConsumerState<InventoryListPage> {
                   child: AppTable(
                     columns: const [
                       AppTableColumn(label: 'Name'),
-                      AppTableColumn(label: 'Location'),
-                      AppTableColumn(label: 'Status'),
-                      AppTableColumn(label: 'Capacity'),
+                      AppTableColumn(label: 'SKU'),
+                      AppTableColumn(label: 'Category'),
+                      AppTableColumn(label: 'Quantity'),
+                      AppTableColumn(label: 'Price'),
                       AppTableColumn(label: 'Actions'),
                     ],
                     rows: inventory.map((item) {
