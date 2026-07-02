@@ -10,7 +10,8 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
 });
 
 final dioClientProvider = Provider<DioClient>((ref) {
-  return DioClient();
+  final tokenStorage = ref.watch(tokenStorageProvider);
+  return DioClient(tokenStorage);
 });
 
 final tokenStorageProvider = Provider<TokenStorage>((ref) {

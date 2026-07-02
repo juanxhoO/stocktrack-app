@@ -9,23 +9,26 @@ class AuthRemoteDatasource {
 
   Future<UserModel> login(String email, String password) async {
     try {
-      // In a real app, this would be:
-      // final response = await dio.post(ApiEndpoints.login, data: {'email': email, 'password': password});
-      // return UserModel.fromJson(response.data);
-      
-      // Mocked delay for demonstration
-      await Future.delayed(const Duration(seconds: 2));
-      
+      final response = await dio.post(
+        "http://localhost:3000/api/v1/auth/email/login",
+        data: {'email': email, 'password': password},
+      );
+
+      print("Login Success: ${response.data}");
       if (email.isEmpty || password.isEmpty) {
         throw Exception('Email and password cannot be empty');
       }
-      
-      return UserModel(
-        id: '123',
-        email: email,
-      );
-    } catch (e) {
-      rethrow;
+
+      return UserModel.fromJson(response.data);
+    } on DioException catch (e) {
+      // Handle specific API errors, e.g., 401 Unauthorized
+      if (e.response?.statusCode == 401) {
+        throw Exception('Invalid email or password');
+      }
+      if (e.response?.statusCode == 422) {
+        throw Exception(e.response?.data['errors'].toString());
+      }
+      throw Exception(e.response?.data['errors'].toString());
     }
   }
 }

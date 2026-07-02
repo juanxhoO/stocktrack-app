@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:stocktrack_app/shared/providers/dependencies.dart';
 import '../controllers/profile_controller.dart';
 import 'package:stocktrack_app/shared/widgets/sidebar.dart';
 
@@ -115,6 +116,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   : null,
             ),
             const SizedBox(height: 24),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     final tokenStorage = ref.read(tokenStorageProvider);
+            //     final token = tokenStorage.getToken();
+            //     print("Token from Storage: $token");
+            //   },
+            //   child: const Text('Test Token Persistence'),
+            // ),
 
             // ── Form ────────────────────────────────────
             Form(

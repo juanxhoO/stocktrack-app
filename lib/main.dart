@@ -6,7 +6,7 @@ import 'shared/providers/dependencies.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   final sharedPreferences = await SharedPreferences.getInstance();
 
   runApp(
@@ -19,18 +19,19 @@ void main() async {
   );
 }
 
-class StockTrackApp extends StatelessWidget {
+class StockTrackApp extends ConsumerWidget {
   const StockTrackApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(goRouterProvider);
     return MaterialApp.router(
       title: 'Stock Track App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      routerConfig: appRouter,
+      routerConfig: router,
     );
   }
 }
