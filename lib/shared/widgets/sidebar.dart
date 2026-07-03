@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/dependencies.dart';
 
 // ─────────────────────────────────────────────────────────────
 // MODEL
@@ -311,19 +313,26 @@ class _NavTile extends StatelessWidget {
 // FOOTER
 // ─────────────────────────────────────────────────────────────
 
-class _UserFooter extends StatelessWidget {
+class _UserFooter extends ConsumerWidget {
   const _UserFooter();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
       leading: const CircleAvatar(child: Text('JD')),
       title: const Text('Juan Díaz'),
       subtitle: const Text('Administrator'),
       trailing: IconButton(
         icon: const Icon(Icons.logout),
-        onPressed: () {
-          // logout
+        onPressed: () async {
+          // Delete token from storage
+          final tokenStorage = ref.read(tokenStorageProvider);
+          await tokenStorage.deleteToken();
+          
+          // Redirect to login screen
+          if (context.mounted) {
+            context.go('/login');
+          }
         },
       ),
       onTap: () {

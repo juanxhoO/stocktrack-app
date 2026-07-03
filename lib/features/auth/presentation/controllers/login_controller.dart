@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth_providers.dart';
+import '../../../../shared/providers/dependencies.dart';
 
 class LoginState {
   final bool isLoading;
@@ -12,11 +13,7 @@ class LoginState {
     this.error,
   });
 
-  LoginState copyWith({
-    bool? isLoading,
-    bool? isSuccess,
-    String? error,
-  }) {
+  LoginState copyWith({bool? isLoading, bool? isSuccess, String? error}) {
     return LoginState(
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
@@ -40,11 +37,11 @@ class LoginController extends Notifier<LoginState> {
 
     try {
       final loginUseCase = ref.read(loginUseCaseProvider);
-      final _ = await loginUseCase.call(email, password);
+      final user = await loginUseCase.call(email, password);
 
       // Save token or handle user session here
-      // final tokenStorage = ref.read(tokenStorageProvider);
-      // await tokenStorage.saveToken("mock_token_${user.id}");
+      final tokenStorage = ref.read(tokenStorageProvider);
+      await tokenStorage.saveToken(user.token);
 
       state = state.copyWith(isLoading: false, isSuccess: true);
     } catch (e) {
