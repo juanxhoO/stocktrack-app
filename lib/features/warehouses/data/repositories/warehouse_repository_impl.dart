@@ -22,11 +22,7 @@ class WarehouseRepositoryImpl implements WarehouseRepository {
     String? description,
     String? image,
   }) {
-    return remote.createWarehouse(
-      name: name,
-      description: description,
-      image: image,
-    );
+    return remote.createWarehouse(name: name, image: image);
   }
 
   @override

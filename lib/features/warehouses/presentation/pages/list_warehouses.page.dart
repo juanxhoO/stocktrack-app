@@ -214,14 +214,16 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
                   cells: [
                     Text(warehouse.name),
                     Text('${warehouse.city}, ${warehouse.state}'),
-                    Text(warehouse.status == true ? 'Active' : 'Inactive'),
-                    Text('${warehouse.capacity} items'),
+                    Text(warehouse.isActive == true ? 'Active' : 'Inactive'),
+                    Text(warehouse.capacity?.toString() ?? 'N/A'),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                           icon: const Icon(Icons.visibility),
-                          onPressed: () {},
+                          onPressed: () {
+                            context.go('/warehouses/${warehouse.id}');
+                          },
                         ),
                         IconButton(
                           icon: const Icon(Icons.edit),
@@ -235,16 +237,16 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
                 );
               }).toList(),
             ),
-            AppMap(
-              markers: warehouses.map((warehouse) {
-                return AppMapMarker(
-                  id: warehouse.id,
-                  title: warehouse.name,
-                  latitude: 48.8584,
-                  longitude: 2.2945,
-                );
-              }).toList(),
-            ),
+            // AppMap(
+            //   markers: warehouses.map((warehouse) {
+            //     return AppMapMarker(
+            //       id: warehouse.id,
+            //       title: warehouse.name,
+            //       latitude: 48.8584,
+            //       longitude: 2.2945,
+            //     );
+            //   }).toList(),
+            // ),
           ],
         ),
       ),

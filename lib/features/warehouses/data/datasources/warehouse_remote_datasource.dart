@@ -13,31 +13,24 @@ class WarehouseRemoteDatasource {
   WarehouseRemoteDatasource(this.dio);
 
   Future<List<WarehouseModel>> searchWarehouses({String? query}) async {
-    // In a real app:
-    // final response = await dio.get('/products/$id');
-    // return ProductModel.fromJson(response.data);
-
-    // Mocked for demonstration
-    await Future.delayed(const Duration(seconds: 1));
-    return [
-      WarehouseModel(
-        id: '1',
-        name: 'Wireless Headphones',
-        description: 'Premium noise cancelling headphones.',
-        address: '123 Main St',
-        capacity: 100,
-        city: 'New York',
-        status: true,
-        state: 'NY',
-        country: 'USA',
-        zipCode: '10001',
-        phoneNumber: '1234567890',
-        email: 'juan@email.com',
-        image: images[0],
-        createdAt: '2023-10-01T00:00:00.000Z',
-        updatedAt: '2023-10-01T00:00:00.000Z',
-      ),
-    ];
+    try {
+      final response = await dio.get(
+        '/warehouses',
+        queryParameters: {'name': query},
+      );
+      return List<WarehouseModel>.from(
+        response.data['data'].map((x) => WarehouseModel.fromJson(x)),
+      );
+    } on DioException catch (e) {
+      // Handle specific API errors, e.g., 401 Unauthorized
+      if (e.response?.statusCode == 401) {
+        throw Exception('Invalid email or password');
+      }
+      if (e.response?.statusCode == 422) {
+        throw Exception(e.response?.data['errors'].toString());
+      }
+      throw Exception(e.response?.data['errors'].toString());
+    }
   }
 
   Future<WarehouseModel> getWarehouse(String id) async {
@@ -48,27 +41,26 @@ class WarehouseRemoteDatasource {
     // Mocked for demonstration
     await Future.delayed(const Duration(seconds: 1));
     return const WarehouseModel(
-      id: '123',
+      id: 123,
       name: 'Sample Product',
-      description: 'A mock description for our product.',
-      image: 'https://example.com/image.jpg',
       address: '123 Main St',
       capacity: 100,
       city: 'New York',
-      status: true,
+      hasClimateControl: false,
+      manager: {"id": 7, "role": null, "status": null},
+      isActive: true,
       state: 'NY',
       country: 'USA',
-      zipCode: '10001',
-      phoneNumber: '1234567890',
-      email: 'juan@email.com',
+      zipcode: '10001',
+      phone: '1234567890',
       createdAt: '2023-10-01T00:00:00.000Z',
       updatedAt: '2023-10-01T00:00:00.000Z',
+      deletedAt: null,
     );
   }
 
   Future<WarehouseModel> createWarehouse({
     String? name,
-    String? description,
     String? image,
     String? address,
     int? capacity,
@@ -86,21 +78,21 @@ class WarehouseRemoteDatasource {
 
     await Future.delayed(const Duration(seconds: 1));
     return WarehouseModel(
-      id: '124',
+      id: 124,
       name: name ?? 'New Product',
-      description: description ?? 'New Description',
-      image: image ?? 'https://example.com/image.jpg',
       address: address ?? 'New Address',
       capacity: capacity ?? 100,
+      hasClimateControl: false,
       city: city ?? 'New City',
-      status: status ?? true,
+      manager: {"id": 7, "role": null, "status": null},
+      isActive: status ?? true,
       state: state ?? 'New State',
       country: country ?? 'New Country',
-      zipCode: zipCode ?? 'New Zip Code',
-      phoneNumber: phoneNumber ?? 'New Phone Number',
-      email: email ?? 'New Email',
+      zipcode: zipCode ?? 'New Zip Code',
+      phone: phoneNumber ?? 'New Phone Number',
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
+      deletedAt: null,
     );
   }
 
@@ -116,21 +108,21 @@ class WarehouseRemoteDatasource {
 
     await Future.delayed(const Duration(seconds: 1));
     return WarehouseModel(
-      id: id ?? '123',
+      id: 123,
       name: name ?? 'Updated Product',
-      description: description ?? 'Updated Description',
-      image: image ?? 'https://example.com/image.jpg',
       address: '123 Main St',
+      hasClimateControl: true,
       capacity: 100,
       city: 'New York',
-      status: true,
+      manager: {"id": 7, "role": null, "status": null},
+      isActive: true,
       state: 'NY',
       country: 'USA',
-      zipCode: '10001',
-      phoneNumber: '1234567890',
-      email: 'juan@email.com',
+      zipcode: '10001',
+      phone: '1234567890',
       createdAt: '2023-10-01T00:00:00.000Z',
       updatedAt: DateTime.now().toIso8601String(),
+      deletedAt: null,
     );
   }
 
