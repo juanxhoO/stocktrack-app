@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-// import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/network/api_endpoints.dart';
 import '../models/user_model.dart';
 
 class AuthRemoteDatasource {
@@ -10,15 +10,13 @@ class AuthRemoteDatasource {
   Future<UserModel> login(String email, String password) async {
     try {
       final response = await dio.post(
-        "http://localhost:3000/api/v1/auth/email/login",
+        ApiEndpoints.login,
         data: {'email': email, 'password': password},
       );
 
-      print("Login Success: ${response.data}");
       if (email.isEmpty || password.isEmpty) {
         throw Exception('Email and password cannot be empty');
       }
-
       return UserModel.fromJson(response.data);
     } on DioException catch (e) {
       // Handle specific API errors, e.g., 401 Unauthorized
