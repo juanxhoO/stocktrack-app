@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stocktrack_app/features/users/presentation/pages/list_users.page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/auth/presentation/pages/forgot_password.dart';
@@ -97,7 +98,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-
+      GoRoute(
+        path: '/users',
+        builder: (context, state) => const UserListPage(),
+      ),
       GoRoute(
         path: '/categories',
         builder: (context, state) => const CategoryListPage(),
