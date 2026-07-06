@@ -54,7 +54,6 @@ class WarehouseController extends Notifier<WarehouseState> {
 
   Future<void> loadWarehouse(String id) async {
     state = state.copyWith(isLoading: true, error: null);
-
     try {
       final getWarehouseUseCase = ref.read(getWarehouseUseCaseProvider);
       final warehouse = await getWarehouseUseCase.call(id);
@@ -66,7 +65,6 @@ class WarehouseController extends Notifier<WarehouseState> {
 
   Future<void> removeWarehouse(String id) async {
     state = state.copyWith(isLoading: true, error: null);
-
     try {
       final deleteWarehouseUseCase = ref.read(deleteWarehouseUseCaseProvider);
       await deleteWarehouseUseCase.call(id);
@@ -76,40 +74,81 @@ class WarehouseController extends Notifier<WarehouseState> {
     }
   }
 
-  Future<void> createWarehouse({
-    String? name,
-    String? description,
+  Future<bool> createWarehouse({
+    required String name,
+    String? code,
+    String? phone,
     String? address,
+    String? city,
+    String? state_,
+    String? manager,
+    String? country,
+    String? zipcode,
+    int? capacity,
+    bool? hasClimateControl,
+    bool? isActive,
   }) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final createWarehouseUseCase = ref.read(createWarehouseUseCaseProvider);
       final warehouse = await createWarehouseUseCase.call(
         name: name,
-        description: description,
+        code: code,
+        phone: phone,
+        address: address,
+        city: city,
+        state: state_,
+        country: country,
+        zipcode: zipcode,
+        capacity: capacity,
+        hasClimateControl: hasClimateControl,
+        isActive: isActive,
       );
       state = state.copyWith(isLoading: false, warehouse: warehouse);
+      return true;
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
+      return false;
     }
   }
 
-  Future<void> updateWarehouse({
-    String? name,
-    String? description,
+  Future<bool> updateWarehouse({
+    required String id,
+    required String name,
+    String? code,
+    String? manager,
+    String? phone,
     String? address,
+    String? city,
+    String? state_,
+    String? country,
+    String? zipcode,
+    int? capacity,
+    bool? hasClimateControl,
+    bool? isActive,
   }) async {
     state = state.copyWith(isLoading: true, error: null);
-
     try {
       final updateWarehouseUseCase = ref.read(updateWarehouseUseCaseProvider);
       final updatedWarehouse = await updateWarehouseUseCase.call(
+        id: id,
         name: name,
-        description: description,
+        code: code,
+        phone: phone,
+        address: address,
+        city: city,
+        state: state_,
+        country: country,
+        zipcode: zipcode,
+        capacity: capacity,
+        hasClimateControl: hasClimateControl,
+        isActive: isActive,
       );
       state = state.copyWith(isLoading: false, warehouse: updatedWarehouse);
+      return true;
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
+      return false;
     }
   }
 }

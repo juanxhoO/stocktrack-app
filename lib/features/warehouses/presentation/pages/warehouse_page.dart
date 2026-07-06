@@ -69,6 +69,7 @@ class _WarehousePageState extends ConsumerState<WarehousePage> {
   @override
   Widget build(BuildContext context) {
     final warehouseState = ref.watch(warehouseControllerProvider);
+    debugPrint(warehouseState.toString());
     final isDesktop = MediaQuery.of(context).size.width >= 1024;
     return Scaffold(
       drawer: isDesktop ? null : const AppSidebar(),

@@ -12,31 +12,68 @@ class WarehouseRepositoryImpl implements WarehouseRepository {
     return remote.searchWarehouses(query: query);
   }
 
+  @override
   Future<Warehouse> getWarehouse(String id) {
     return remote.getWarehouse(id);
   }
 
   @override
   Future<Warehouse> createWarehouse({
-    String? name,
-    String? description,
-    String? image,
+    required String name,
+    String? code,
+    String? phone,
+    String? address,
+    String? city,
+    String? state,
+    String? country,
+    String? zipcode,
+    int? capacity,
+    bool? hasClimateControl,
+    bool? isActive,
   }) {
-    return remote.createWarehouse(name: name, image: image);
+    return remote.createWarehouse(
+      name: name,
+      code: code,
+      phone: phone,
+      address: address,
+      city: city,
+      state: state,
+      country: country,
+      zipCode: zipcode,
+      capacity: capacity,
+      hasClimateControl: hasClimateControl,
+      isActive: isActive,
+    );
   }
 
   @override
   Future<Warehouse> updateWarehouse({
-    String? name,
-    String? description,
-    String? image,
+    required String id,
+    required String name,
+    String? code,
+    String? phone,
+    String? address,
+    String? city,
+    String? state,
+    String? country,
+    String? zipcode,
+    int? capacity,
+    bool? hasClimateControl,
+    bool? isActive,
   }) {
-    // Note: The repository signature in domain/repositories/product_repository.dart
-    // currently doesn't take an ID. In a real app, you'd likely want to pass an ID here!
     return remote.updateWarehouse(
+      id: id,
       name: name,
-      description: description,
-      image: image,
+      code: code,
+      phone: phone,
+      address: address,
+      city: city,
+      state: state,
+      country: country,
+      zipCode: zipcode,
+      capacity: capacity,
+      hasClimateControl: hasClimateControl,
+      isActive: isActive,
     );
   }
 

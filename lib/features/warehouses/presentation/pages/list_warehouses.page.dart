@@ -228,7 +228,10 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
-                            context.go('/warehouses/edit/${warehouse.id}');
+                            context.go(
+                              '/warehouses/edit/${warehouse.id}',
+                              extra: warehouse,
+                            );
                           },
                         ),
                       ],
