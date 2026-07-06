@@ -1,144 +1,110 @@
 import 'package:dio/dio.dart';
 import '../models/warehouse_model.dart';
+import '../../../../core/network/api_endpoints.dart';
 
 class WarehouseRemoteDatasource {
   final Dio dio;
-  final images = [
-    'https://picsum.photos/seed/product1/600/600',
-    'https://picsum.photos/seed/product2/600/600',
-    'https://picsum.photos/seed/product3/600/600',
-    'https://picsum.photos/seed/product4/600/600',
-    'https://picsum.photos/seed/product5/600/600',
-  ];
+
   WarehouseRemoteDatasource(this.dio);
 
   Future<List<WarehouseModel>> searchWarehouses({String? query}) async {
-    // In a real app:
-    // final response = await dio.get('/products/$id');
-    // return ProductModel.fromJson(response.data);
-
-    // Mocked for demonstration
-    await Future.delayed(const Duration(seconds: 1));
-    return [
-      WarehouseModel(
-        id: '1',
-        name: 'Wireless Headphones',
-        description: 'Premium noise cancelling headphones.',
-        address: '123 Main St',
-        capacity: 100,
-        city: 'New York',
-        status: true,
-        state: 'NY',
-        country: 'USA',
-        zipCode: '10001',
-        phoneNumber: '1234567890',
-        email: 'juan@email.com',
-        image: images[0],
-        createdAt: '2023-10-01T00:00:00.000Z',
-        updatedAt: '2023-10-01T00:00:00.000Z',
-      ),
-    ];
+    try {
+      final response = await dio.get(
+        ApiEndpoints.warehouses,
+        queryParameters: {'name': query},
+      );
+      return List<WarehouseModel>.from(
+        response.data['data'].map((x) => WarehouseModel.fromJson(x)),
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw Exception('Invalid email or password');
+      }
+      if (e.response?.statusCode == 422) {
+        throw Exception(e.response?.data['errors'].toString());
+      }
+      throw Exception(e.response?.data['errors'].toString());
+    }
   }
 
   Future<WarehouseModel> getWarehouse(String id) async {
-    // In a real app:
-    // final response = await dio.get('/products/$id');
-    // return ProductModel.fromJson(response.data);
-
-    // Mocked for demonstration
-    await Future.delayed(const Duration(seconds: 1));
-    return const WarehouseModel(
-      id: '123',
-      name: 'Sample Product',
-      description: 'A mock description for our product.',
-      image: 'https://example.com/image.jpg',
-      address: '123 Main St',
-      capacity: 100,
-      city: 'New York',
-      status: true,
-      state: 'NY',
-      country: 'USA',
-      zipCode: '10001',
-      phoneNumber: '1234567890',
-      email: 'juan@email.com',
-      createdAt: '2023-10-01T00:00:00.000Z',
-      updatedAt: '2023-10-01T00:00:00.000Z',
-    );
+    final response = await dio.get('${ApiEndpoints.warehouses}/$id');
+    return WarehouseModel.fromJson(response.data);
   }
 
   Future<WarehouseModel> createWarehouse({
-    String? name,
-    String? description,
-    String? image,
+    required String name,
+    String? code,
+    String? phone,
     String? address,
     int? capacity,
+    bool? hasClimateControl,
+    bool? isActive,
     String? city,
-    bool? status,
     String? state,
     String? country,
     String? zipCode,
-    String? phoneNumber,
-    String? email,
   }) async {
-    // In a real app:
-    // final response = await dio.post('/products', data: { ... });
-    // return ProductModel.fromJson(response.data);
-
-    await Future.delayed(const Duration(seconds: 1));
-    return WarehouseModel(
-      id: '124',
-      name: name ?? 'New Product',
-      description: description ?? 'New Description',
-      image: image ?? 'https://example.com/image.jpg',
-      address: address ?? 'New Address',
-      capacity: capacity ?? 100,
-      city: city ?? 'New City',
-      status: status ?? true,
-      state: state ?? 'New State',
-      country: country ?? 'New Country',
-      zipCode: zipCode ?? 'New Zip Code',
-      phoneNumber: phoneNumber ?? 'New Phone Number',
-      email: email ?? 'New Email',
-      createdAt: DateTime.now().toIso8601String(),
-      updatedAt: DateTime.now().toIso8601String(),
+    final response = await dio.post(
+      ApiEndpoints.warehouses,
+      data: {
+        'name': name,
+        'code': code,
+        'phone': phone,
+        'address': address,
+        'capacity': capacity,
+        'hasClimateControl': hasClimateControl,
+        'isActive': isActive,
+        'city': city,
+        'state': state,
+        'country': country,
+        'zipcode': zipCode,
+      },
     );
+    return WarehouseModel.fromJson(response.data);
   }
 
   Future<WarehouseModel> updateWarehouse({
-    String? id,
-    String? name,
-    String? description,
-    String? image,
+    required String id,
+    required String name,
+    String? code,
+    String? phone,
+    String? address,
+    int? capacity,
+    bool? hasClimateControl,
+    bool? isActive,
+    String? city,
+    String? state,
+    String? country,
+    String? zipCode,
   }) async {
-    // In a real app:
-    // final response = await dio.put('/products/$id', data: { ... });
-    // return ProductModel.fromJson(response.data);
+    // TODO: Replace with real API call:
+    // final response = await dio.put('${ApiEndpoints.warehouses}/$id', data: { ... });
+    // return WarehouseModel.fromJson(response.data);
 
     await Future.delayed(const Duration(seconds: 1));
     return WarehouseModel(
-      id: id ?? '123',
-      name: name ?? 'Updated Product',
-      description: description ?? 'Updated Description',
-      image: image ?? 'https://example.com/image.jpg',
-      address: '123 Main St',
-      capacity: 100,
-      city: 'New York',
-      status: true,
-      state: 'NY',
-      country: 'USA',
-      zipCode: '10001',
-      phoneNumber: '1234567890',
-      email: 'juan@email.com',
-      createdAt: '2023-10-01T00:00:00.000Z',
+      id: int.tryParse(id) ?? 0,
+      name: name,
+      address: address ?? '',
+      hasClimateControl: hasClimateControl ?? false,
+      capacity: capacity ?? 0,
+      city: city ?? '',
+      manager: {"id": 7, "role": null, "status": null},
+      isActive: isActive ?? true,
+      state: state ?? '',
+      country: country ?? '',
+      zipcode: zipCode ?? '',
+      phone: phone ?? '',
+      createdAt: null,
       updatedAt: DateTime.now().toIso8601String(),
+      deletedAt: null,
     );
   }
 
   Future<void> deleteWarehouse(String id) async {
-    // In a real app:
-    // await dio.delete('/products/$id');
-
-    // Mocked for demonstration
+    // TODO: Replace with real API call:
+    // await dio.delete('${ApiEndpoints.warehouses}/$id');
     await Future.delayed(const Duration(seconds: 1));
   }
 }

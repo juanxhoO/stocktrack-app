@@ -69,6 +69,7 @@ class _WarehousePageState extends ConsumerState<WarehousePage> {
   @override
   Widget build(BuildContext context) {
     final warehouseState = ref.watch(warehouseControllerProvider);
+    debugPrint(warehouseState.toString());
     final isDesktop = MediaQuery.of(context).size.width >= 1024;
     return Scaffold(
       drawer: isDesktop ? null : const AppSidebar(),
@@ -150,15 +151,6 @@ class _WarehousePageState extends ConsumerState<WarehousePage> {
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
 
-                    const SizedBox(height: 8),
-
-                    Text(
-                      warehouse.description ?? 'Main warehouse',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-
                     const SizedBox(height: 16),
 
                     Wrap(
@@ -182,20 +174,22 @@ class _WarehousePageState extends ConsumerState<WarehousePage> {
                         ),
 
                         Chip(
-                          backgroundColor: warehouse.status
+                          backgroundColor: warehouse.isActive
                               ? Colors.green.shade50
                               : Colors.red.shade50,
                           avatar: Icon(
-                            warehouse.status
+                            warehouse.isActive
                                 ? Icons.check_circle_outline
                                 : Icons.cancel_outlined,
                             size: 18,
-                            color: warehouse.status ? Colors.green : Colors.red,
+                            color: warehouse.isActive
+                                ? Colors.green
+                                : Colors.red,
                           ),
                           label: Text(
-                            warehouse.status ? 'Active' : 'Inactive',
+                            warehouse.isActive ? 'Active' : 'Inactive',
                             style: TextStyle(
-                              color: warehouse.status
+                              color: warehouse.isActive
                                   ? Colors.green.shade700
                                   : Colors.red.shade700,
                               fontWeight: FontWeight.w600,
@@ -251,7 +245,7 @@ class _WarehousePageState extends ConsumerState<WarehousePage> {
                       icon: Icons.inventory_2,
                     ),
                     DashboardCard(
-                      title: 'Warehouses',
+                      title: 'Capacity',
                       value: '12',
                       icon: Icons.warehouse,
                     ),
@@ -283,7 +277,7 @@ class _WarehousePageState extends ConsumerState<WarehousePage> {
                         cells: [
                           Text(warehouse.name),
                           Text('${warehouse.city}, ${warehouse.state}'),
-                          Text(warehouse.status ? 'Active' : 'Inactive'),
+                          Text(warehouse.isActive ? 'Active' : 'Inactive'),
                           Text('${warehouse.capacity} items'),
                           Row(
                             mainAxisSize: MainAxisSize.min,
@@ -322,15 +316,28 @@ class _WarehousePageState extends ConsumerState<WarehousePage> {
 
                           const Divider(),
 
+                          Text('Manager: ${warehouse.manager}'),
                           const SizedBox(height: 8),
 
-                          Text('Total Products: 1,248'),
+                          Text('Phone: ${warehouse.phone}'),
                           const SizedBox(height: 8),
 
-                          Text('Low Stock: 18'),
+                          Text('Address: ${warehouse.address}'),
                           const SizedBox(height: 8),
 
-                          Text('Capacity Used: 75%'),
+                          Text('City: ${warehouse.city}'),
+                          const SizedBox(height: 8),
+
+                          Text('State: ${warehouse.state}'),
+                          const SizedBox(height: 8),
+
+                          Text('Zip: ${warehouse.zipcode}'),
+                          const SizedBox(height: 8),
+
+                          Text('Country: ${warehouse.country}'),
+                          const SizedBox(height: 8),
+
+                          Text('Total Capacity : ${warehouse.capacity}'),
                           const SizedBox(height: 8),
 
                           Text('Last Updated: Today'),

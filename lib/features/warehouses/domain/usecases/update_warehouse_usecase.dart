@@ -6,11 +6,33 @@ class UpdateWarehouseUseCase {
 
   UpdateWarehouseUseCase(this.repository);
 
-  Future<Warehouse> call({String? name, String? description, String? image}) {
+  Future<Warehouse> call({
+    required String id,
+    required String name,
+    String? code,
+    String? phone,
+    String? address,
+    String? city,
+    String? state,
+    String? country,
+    String? zipcode,
+    int? capacity,
+    bool? hasClimateControl,
+    bool? isActive,
+  }) {
     return repository.updateWarehouse(
+      id: id,
       name: name,
-      description: description,
-      image: image,
+      code: code,
+      phone: phone,
+      address: address,
+      city: city,
+      state: state,
+      country: country,
+      zipcode: zipcode,
+      capacity: capacity,
+      hasClimateControl: hasClimateControl,
+      isActive: isActive,
     );
   }
 }

@@ -1,19 +1,19 @@
 class Warehouse {
-  final String id;
+  final num id;
   final String name;
   final String address;
-  final num capacity;
+  final num? capacity;
+  final bool hasClimateControl;
   final String city;
-  final bool status;
+  final bool isActive;
   final String state;
-  final String description;
   final String country;
-  final String zipCode;
-  final String phoneNumber;
-  final String email;
-  final String? image;
+  final String zipcode;
+  final String phone;
+  final Map<String, dynamic>? manager;
   final String? createdAt;
   final String? updatedAt;
+  final String? deletedAt;
 
   const Warehouse({
     required this.id,
@@ -21,15 +21,15 @@ class Warehouse {
     required this.address,
     required this.capacity,
     required this.city,
-    required this.status,
-    required this.description,
+    required this.manager,
+    required this.hasClimateControl,
+    required this.isActive,
     required this.state,
     required this.country,
-    required this.zipCode,
-    required this.phoneNumber,
-    required this.email,
-    required this.image,
+    required this.zipcode,
+    required this.phone,
     required this.createdAt,
     required this.updatedAt,
+    required this.deletedAt,
   });
 }

@@ -10,6 +10,7 @@ import '../../features/dashboard/presentation/pages/dashboard.dart';
 import '../../features/warehouses/presentation/pages/list_warehouses.page.dart';
 import '../../features/warehouses/presentation/pages/warehouse_page.dart';
 import '../../features/warehouses/presentation/pages/create_warehouse_page.dart';
+import '../../features/warehouses/domain/entities/warehouse.dart';
 import '../../features/category/presentation/pages/list_categories.page.dart';
 import '../../features/category/presentation/pages/category_page.dart';
 import '../../features/category/presentation/pages/create_category_page.dart';
@@ -66,7 +67,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: 'create',
-            builder: (context, state) => const WarehouseCreatePage(),
+            builder: (context, state) => const WarehouseFormPage(),
+          ),
+          GoRoute(
+            path: 'edit/:id',
+            builder: (context, state) {
+              // The list page passes the full Warehouse object via `extra`
+              // so we don't need an extra network round-trip.
+              final warehouse = state.extra as Warehouse?;
+              return WarehouseFormPage(warehouse: warehouse);
+            },
           ),
           GoRoute(
             path: ':id',
@@ -80,27 +90,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/home',
         builder: (context, state) => const DashboardPage(),
-      ),
-      GoRoute(
-        path: '/warehouses',
-        builder: (context, state) => const WarehouseListPage(),
-        routes: [
-          GoRoute(
-            path: 'create',
-            builder: (context, state) => const WarehouseCreatePage(),
-          ),
-          GoRoute(
-            path: ':id',
-            builder: (context, state) {
-              final id = state.pathParameters['id']!;
-              return WarehousePage(id: id);
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        path: '/users',
-        builder: (context, state) => const UserListPage(),
       ),
       GoRoute(
         path: '/categories',
