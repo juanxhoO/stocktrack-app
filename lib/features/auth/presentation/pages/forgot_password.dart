@@ -198,6 +198,23 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 width: 200,
                 height: 50,
                 child: ElevatedButton(
+                  style: ButtonStyle(
+                    mouseCursor: WidgetStatePropertyAll(
+                      SystemMouseCursors.click,
+                    ),
+                    backgroundColor: WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.hovered)) {
+                        return Colors.blue.shade700;
+                      }
+                      return Colors.blue;
+                    }),
+                    foregroundColor: WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.hovered)) {
+                        return Colors.yellow;
+                      }
+                      return Colors.white;
+                    }),
+                  ),
                   onPressed: loginState.isLoading ? null : _onSubmitPressed,
                   child: loginState.isLoading
                       ? const SizedBox(
@@ -219,11 +236,21 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                   'Remember your password? ',
                   style: TextStyle(color: Colors.grey.shade600),
                 ),
-                GestureDetector(
-                  onTap: () => context.go('/login'),
+                TextButton(
+                  style: ButtonStyle(
+                    mouseCursor: WidgetStatePropertyAll(
+                      SystemMouseCursors.click,
+                    ),
+                    foregroundColor: WidgetStateProperty.resolveWith((states) {
+                      return states.contains(WidgetState.hovered)
+                          ? Colors.blue.shade700
+                          : Colors.blue;
+                    }),
+                  ),
+                  onPressed: () => context.go('/login'),
                   child: const Text(
-                    'Sign in',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    'Login',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],

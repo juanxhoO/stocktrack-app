@@ -38,8 +38,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         context.go('/profile');
       }
     });
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        title: const Text('Inventory Stock App'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -116,6 +123,22 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               height: 50,
               width: 300,
               child: ElevatedButton(
+                style: ButtonStyle(
+                  mouseCursor: WidgetStatePropertyAll(SystemMouseCursors.click),
+
+                  backgroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.hovered)) {
+                      return Colors.blue.shade700;
+                    }
+                    return Colors.blue;
+                  }),
+                  foregroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.hovered)) {
+                      return Colors.yellow;
+                    }
+                    return Colors.white;
+                  }),
+                ),
                 onPressed: loginState.isLoading ? null : _onLoginPressed,
                 child: loginState.isLoading
                     ? const CircularProgressIndicator()
@@ -132,34 +155,45 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   spacing: 5,
                   children: [
                     Text('Don\'t have an account?'),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: InkWell(
-                        onTap: () => context.go('/signup'),
-                        child: const Text(
-                          'Register',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    TextButton(
+                      style: ButtonStyle(
+                        mouseCursor: WidgetStatePropertyAll(
+                          SystemMouseCursors.click,
+                        ),
+                        foregroundColor: WidgetStateProperty.resolveWith((
+                          states,
+                        ) {
+                          return states.contains(WidgetState.hovered)
+                              ? Colors.blue.shade700
+                              : Colors.blue;
+                        }),
+                      ),
+                      onPressed: () => context.go('/signup'),
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
                 ),
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: InkWell(
-                    onTap: () => context.go('/forgot-password'),
-                    child: const Text(
-                      'Forgot Password',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                TextButton(
+                  style: ButtonStyle(
+                    mouseCursor: WidgetStatePropertyAll(
+                      SystemMouseCursors.click,
                     ),
+                    foregroundColor: WidgetStateProperty.resolveWith((states) {
+                      return states.contains(WidgetState.hovered)
+                          ? Colors.blue.shade700
+                          : Colors.blue;
+                    }),
+                  ),
+                  onPressed: () => context.go('/forgot-password'),
+                  child: const Text(
+                    'Forgot Password',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
