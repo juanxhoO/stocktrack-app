@@ -6,5 +6,5 @@ class ApiEndpoints {
   static const String forgotPassword = '$baseUrl/auth/forgot-password';
   static const String resetPassword = '$baseUrl/auth/reset-password';
   static const String warehouses = '$baseUrl/warehouses';
-
+  static const String categories = '$baseUrl/categories';
 }

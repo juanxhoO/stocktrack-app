@@ -120,10 +120,6 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
 
     final warehouses = warehouseState.warehouses;
 
-    if (warehouses == null || warehouses.isEmpty) {
-      return const Center(child: Text('No warehouses found'));
-    }
-
     return RefreshIndicator(
       onRefresh: () async {
         await ref.read(warehouseControllerProvider.notifier).searchWarehouses();
@@ -201,45 +197,57 @@ class _WarehouseListPageState extends ConsumerState<WarehouseListPage> {
             ),
 
             const SizedBox(height: 16),
-            AppTable(
-              columns: const [
-                AppTableColumn(label: 'Name'),
-                AppTableColumn(label: 'Location'),
-                AppTableColumn(label: 'Status'),
-                AppTableColumn(label: 'Capacity'),
-                AppTableColumn(label: 'Actions'),
-              ],
-              rows: warehouses.map((warehouse) {
-                return AppTableRow(
-                  cells: [
-                    Text(warehouse.name),
-                    Text('${warehouse.city}, ${warehouse.state}'),
-                    Text(warehouse.isActive == true ? 'Active' : 'Inactive'),
-                    Text(warehouse.capacity?.toString() ?? 'N/A'),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.visibility),
-                          onPressed: () {
-                            context.go('/warehouses/${warehouse.id}');
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            context.go(
-                              '/warehouses/edit/${warehouse.id}',
-                              extra: warehouse,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                );
-              }).toList(),
-            ),
+
+            if (warehouses == null || warehouses.isEmpty)
+              const Center(child: Text('No warehouses found'))
+            else
+              AppTable(
+                columns: const [
+                  AppTableColumn(label: 'Name'),
+                  AppTableColumn(label: 'Location'),
+                  AppTableColumn(label: 'Status'),
+                  AppTableColumn(label: 'Capacity'),
+                  AppTableColumn(label: 'Actions'),
+                ],
+                rows: warehouses.isEmpty
+                    ? [
+                        AppTableRow(cells: [const Text('No warehouses found')]),
+                      ]
+                    : warehouses.map((warehouse) {
+                        return AppTableRow(
+                          cells: [
+                            Text(warehouse.name),
+                            Text('${warehouse.city}, ${warehouse.state}'),
+                            Text(
+                              warehouse.isActive == true
+                                  ? 'Active'
+                                  : 'Inactive',
+                            ),
+                            Text(warehouse.capacity?.toString() ?? 'N/A'),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.visibility),
+                                  onPressed: () {
+                                    context.go('/warehouses/${warehouse.id}');
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () {
+                                    context.go(
+                                      '/warehouses/edit/${warehouse.id}',
+                                      extra: warehouse,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      }).toList(),
+              ),
             // AppMap(
             //   markers: warehouses.map((warehouse) {
             //     return AppMapMarker(
