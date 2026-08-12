@@ -12,12 +12,13 @@ import '../../../users/presentation/controllers/user_controller.dart';
 ///
 /// - [category] == null  →  Create mode
 /// - [category] != null  →  Edit mode (fields are pre-filled)
+
 class CategoryFormPage extends ConsumerStatefulWidget {
-  final Category? category;
+  final String? id;
 
-  const CategoryFormPage({super.key, this.category});
+  const CategoryFormPage({super.key, this.id});
 
-  bool get isEditing => category != null;
+  bool get isEditing => id != null;
 
   @override
   ConsumerState<CategoryFormPage> createState() => _CategoryFormPageState();
@@ -37,14 +38,22 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
   @override
   void initState() {
     super.initState();
-    final c = widget.category;
+    if (widget.id != null) {
+      Future.microtask(() {
+        ref
+            .read(categoryControllerProvider.notifier)
+            .loadCategory(widget.id as String);
+      });
+    }
+    final category = ref.watch(categoryControllerProvider).category;
 
-    _nameController = TextEditingController(text: c?.name ?? '');
+    print('Category Data: ${category}');
+    _nameController = TextEditingController(text: category?.name ?? '');
     _slugController = TextEditingController();
     _descriptionController = TextEditingController();
-    _status = c?.status ?? true;
-    _isParent = c?.parentId == null;
-    _selectedParentId = c?.parentId; // Set initial parent if editing
+    _status = category?.status ?? true;
+    _isParent = category?.parentId == null;
+    _selectedParentId = category?.parentId; // Set initial parent if editing
   }
 
   @override
@@ -64,7 +73,7 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
 
     if (widget.isEditing) {
       success = await controller.updateCategory(
-        id: widget.category!.id.toString(),
+        id: widget.id.toString(),
         name: _nameController.text.trim(),
         slug: _slugController.text.trim(),
         status: _status,
@@ -107,7 +116,7 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
 
     final availableCategories = widget.isEditing
         ? categories.categories
-              ?.where((c) => c.id != widget.category?.id)
+              ?.where((c) => c.id != int.parse(widget.id!))
               .toList()
         : categories.categories;
 

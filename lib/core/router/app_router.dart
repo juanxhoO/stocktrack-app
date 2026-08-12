@@ -101,15 +101,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: 'edit/:id',
-            builder: (context, state) => const CategoryCreatePage(),
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return CategoryCreatePage(id: id);
+            },
           ),
-          // GoRoute(
-          //   path: ':id',
-          //   builder: (context, state) {
-          //     final id = state.pathParameters['id']!;
-          //     return CategoryPage(id: id);
-          //   },
-          // ),
+          GoRoute(
+            path: ':id',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return CategoryPage(id: id);
+            },
+          ),
         ],
       ),
 
