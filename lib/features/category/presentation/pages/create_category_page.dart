@@ -6,20 +6,12 @@ import '../controllers/category_controller.dart';
 import '../../domain/entities/category.dart';
 import 'package:stocktrack_app/shared/widgets/sidebar.dart';
 import 'package:stocktrack_app/shared/widgets/selector.dart';
-import '../../../users/presentation/controllers/user_controller.dart';
 
 /// A single page that handles both creating and editing a category.
-///
-/// - [category] == null  →  Create mode
-/// - [category] != null  →  Edit mode (fields are pre-filled)
-
 class CategoryFormPage extends ConsumerStatefulWidget {
   final String? id;
-
   const CategoryFormPage({super.key, this.id});
-
   bool get isEditing => id != null;
-
   @override
   ConsumerState<CategoryFormPage> createState() => _CategoryFormPageState();
 }
@@ -33,27 +25,89 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
   late final TextEditingController _descriptionController;
   bool _status = true;
   bool _isParent = false;
-  num? _selectedParentId; // Add this for parent category selection
+  String? _selectedParentId; // string para que matchee con AppDropdown<String>
+
+  // Loader mientras se trae la categoría a editar
+  bool _isInitialLoading = false;
+  String? _loadError;
 
   @override
   void initState() {
     super.initState();
-    if (widget.id != null) {
-      Future.microtask(() {
-        ref
-            .read(categoryControllerProvider.notifier)
-            .loadCategory(widget.id as String);
-      });
-    }
-    final category = ref.watch(categoryControllerProvider).category;
 
-    print('Category Data: ${category}');
-    _nameController = TextEditingController(text: category?.name ?? '');
+    _nameController = TextEditingController();
     _slugController = TextEditingController();
     _descriptionController = TextEditingController();
-    _status = category?.status ?? true;
-    _isParent = category?.parentId == null;
-    _selectedParentId = category?.parentId; // Set initial parent if editing
+
+    if (widget.isEditing) {
+      _isInitialLoading = true;
+      // No se puede leer/escribir providers de forma segura de manera síncrona
+      // dentro de initState, así que esperamos al primer frame.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadCategoryForEdit();
+      });
+    } else {
+      _status = true;
+      _isParent = true;
+      _selectedParentId = null;
+    }
+  }
+
+  Future<void> _loadCategoryForEdit() async {
+    final id = widget.id;
+    if (id == null) return;
+
+    final currentState = ref.read(categoryControllerProvider);
+
+    Category? category;
+
+    // 1) Intentamos encontrarla en la lista que ya tiene el provider
+    //    (evita un round-trip si venimos del listado).
+    try {
+      category = currentState.categories?.firstWhere(
+        (c) => c.id == int.parse(id),
+      );
+    } catch (_) {
+      category = null; // no estaba en la lista
+    }
+
+    // 2) Si no estaba en memoria, se la pedimos explícitamente al controller.
+    if (category == null) {
+      try {
+        await ref
+            .read(categoryControllerProvider.notifier)
+            .loadCategory(widget.id!);
+        category = ref.read(categoryControllerProvider).category;
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _loadError = 'No se pudo cargar la categoría: $e';
+            _isInitialLoading = false;
+          });
+        }
+        return;
+      }
+    }
+
+    if (!mounted) return;
+
+    if (category == null) {
+      setState(() {
+        _loadError = 'Categoría no encontrada';
+        _isInitialLoading = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _nameController.text = category!.name;
+      _slugController.text = category.slug;
+      _descriptionController.text = category.description ?? '';
+      _status = category.status ?? true;
+      _isParent = category.parentId == null;
+      _selectedParentId = category.parentId?.toString();
+      _isInitialLoading = false;
+    });
   }
 
   @override
@@ -68,8 +122,12 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
     if (!_formKey.currentState!.validate()) return;
 
     final controller = ref.read(categoryControllerProvider.notifier);
-
     bool success;
+
+    final parsedParentId =
+        (_selectedParentId == null || _selectedParentId!.isEmpty)
+        ? null
+        : num.tryParse(_selectedParentId!);
 
     if (widget.isEditing) {
       success = await controller.updateCategory(
@@ -77,7 +135,7 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
         name: _nameController.text.trim(),
         slug: _slugController.text.trim(),
         status: _status,
-        parentId: _isParent ? null : _selectedParentId, // Add parentId
+        parentId: _isParent ? null : parsedParentId,
         description: _descriptionController.text.trim(),
       );
     } else {
@@ -85,10 +143,9 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
         name: _nameController.text.trim(),
         slug: _slugController.text.trim(),
         status: _status,
-        parentId: _isParent ? null : _selectedParentId, // Add parentId
+        parentId: _isParent ? null : parsedParentId,
         description: _descriptionController.text.trim(),
       );
-      print('success create category: $success');
     }
 
     if (success && mounted) {
@@ -109,16 +166,32 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
   @override
   Widget build(BuildContext context) {
     final categoryState = ref.watch(categoryControllerProvider);
-    // Filter out the current category if editing (to prevent self-parenting)
-    final categories = ref.watch(
-      categoryControllerProvider,
-    ); // Get all categories
 
+    final isDesktop = MediaQuery.of(context).size.width >= 1024;
+    final title = widget.isEditing ? 'Edit category' : 'New category';
+
+    // Mientras se trae la categoría a editar, mostramos un loader
+    // en vez de un form vacío que después "salta" con los datos.
+    if (_isInitialLoading) {
+      return Scaffold(
+        drawer: isDesktop ? null : const AppSidebar(),
+        appBar: AppBar(
+          title: const Text('Edit Category'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go('/categories'),
+          ),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    // Filter out the current category if editing (to prevent self-parenting)
     final availableCategories = widget.isEditing
-        ? categories.categories
+        ? categoryState.categories
               ?.where((c) => c.id != int.parse(widget.id!))
               .toList()
-        : categories.categories;
+        : categoryState.categories;
 
     // Create dropdown entries from categories
     final categoryEntries =
@@ -126,7 +199,6 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
           return DropdownMenuEntry<String>(
             value: category.id.toString(),
             label: category.name,
-            // Optional: add leading icon or trailing text
             leadingIcon: Icon(Icons.category, size: 18),
           );
         }).toList() ??
@@ -137,9 +209,6 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
       const DropdownMenuEntry<String>(value: '', label: 'None'),
       ...categoryEntries,
     ];
-
-    final isDesktop = MediaQuery.of(context).size.width >= 1024;
-    final title = widget.isEditing ? 'Edit category' : 'New category';
 
     return Scaffold(
       drawer: isDesktop ? null : const AppSidebar(),
@@ -205,6 +274,11 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
                       ],
                     ),
 
+                    if (_loadError != null) ...[
+                      const SizedBox(height: 12),
+                      _ErrorBanner(message: _loadError!),
+                    ],
+
                     if (categoryState.error != null) ...[
                       const SizedBox(height: 12),
                       _ErrorBanner(message: categoryState.error!),
@@ -250,49 +324,39 @@ class _CategoryFormPageState extends ConsumerState<CategoryFormPage> {
                               validator: (v) => (v == null || v.trim().isEmpty)
                                   ? 'Description is required'
                                   : null,
-                              keyboardType: TextInputType
-                                  .multiline, // Changed from TextInputType.text
-                              maxLines:
-                                  8, // Add this to allow multiple lines, or use null for unlimited
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 8,
                             ),
-                            Expanded(
-                              child: SwitchListTile(
-                                title: const Text('Status'),
-                                subtitle: const Text('Category is operational'),
-                                value: _status,
-                                onChanged: (v) => setState(() => _status = v),
-                              ),
+                            SwitchListTile(
+                              title: const Text('Status'),
+                              subtitle: const Text('Category is operational'),
+                              value: _status,
+                              onChanged: (v) => setState(() => _status = v),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
                         _FormRow(
                           children: [
-                            Expanded(
-                              child: SwitchListTile(
-                                title: const Text('Is Parent?'),
-                                subtitle: const Text(
-                                  'Category is a parent category',
-                                ),
-                                value: _isParent,
-                                onChanged: (v) => setState(() => _isParent = v),
-                                contentPadding: EdgeInsets.zero,
+                            SwitchListTile(
+                              title: const Text('Is Parent?'),
+                              subtitle: const Text(
+                                'Category is a parent category',
                               ),
+                              value: _isParent,
+                              onChanged: (v) => setState(() => _isParent = v),
+                              contentPadding: EdgeInsets.zero,
                             ),
                             if (!_isParent)
-                              Expanded(
-                                child: AppDropdown<String>(
-                                  label: 'Parent Category',
-                                  hintText: 'Select parent category',
-                                  icon: Icons.category_outlined,
-                                  initialSelection:
-                                      _selectedParentId as String?,
-                                  entries: parentEntries,
-                                  onSelected: (v) => setState(() {
-                                    _selectedParentId = v as num?;
-                                  }),
-                                  // Add loading state
-                                ),
+                              AppDropdown<String>(
+                                label: 'Parent Category',
+                                hintText: 'Select parent category',
+                                icon: Icons.category_outlined,
+                                initialSelection: _selectedParentId,
+                                entries: parentEntries,
+                                onSelected: (v) => setState(() {
+                                  _selectedParentId = v;
+                                }),
                               ),
                           ],
                         ),

@@ -80,20 +80,26 @@ class CategoryRemoteDatasource {
     String? slug,
     int? parentId,
   }) async {
-    // In a real app:
-    // final response = await dio.put('/products/$id', data: { ... });
-    // return ProductModel.fromJson(response.data);
-
-    await Future.delayed(const Duration(seconds: 1));
-    return CategoryModel(
-      id: 123,
-      name: name ?? 'Updated Product',
-      description: description ?? 'Updated Description',
-      slug: 'updated-product',
-      status: true,
-      createdAt: '2023-10-01T00:00:00.000Z',
-      updatedAt: DateTime.now().toIso8601String(),
-    );
+    try {
+      final response = await dio.patch(
+        ApiEndpoints.categories + "/${id}",
+        data: {
+          'name': name,
+          'description': description,
+          'slug': slug,
+          'parent_id': parentId,
+        },
+      );
+      return CategoryModel.fromJson(response.data);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw Exception('Invalid email or password');
+      }
+      if (e.response?.statusCode == 422) {
+        throw Exception(e.response?.data['errors'].toString());
+      }
+      throw Exception(e.response?.data['errors'].toString());
+    }
   }
 
   Future<void> deleteCategory(String id) async {
