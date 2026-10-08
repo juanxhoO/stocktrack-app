@@ -186,20 +186,22 @@ class _CategoryPageState extends ConsumerState<CategoryPage> {
                         ),
 
                         Chip(
-                          backgroundColor: category.status
+                          backgroundColor: category.status == true
                               ? Colors.green.shade50
                               : Colors.red.shade50,
                           avatar: Icon(
-                            category.status
+                            category.status == true
                                 ? Icons.check_circle_outline
                                 : Icons.cancel_outlined,
                             size: 18,
-                            color: category.status ? Colors.green : Colors.red,
+                            color: category.status == true
+                                ? Colors.green
+                                : Colors.red,
                           ),
                           label: Text(
-                            category.status ? 'Active' : 'Inactive',
+                            category.status == true ? 'Active' : 'Inactive',
                             style: TextStyle(
-                              color: category.status
+                              color: category.status == true
                                   ? Colors.green.shade700
                                   : Colors.red.shade700,
                               fontWeight: FontWeight.w600,

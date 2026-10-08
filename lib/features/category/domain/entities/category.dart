@@ -1,21 +1,25 @@
 class Category {
-  final String id;
+  final num id;
   final String name;
-  final String description;
+  final String? description;
   final String? image;
-  final int productsCount;
-  final bool status;
+  final String slug;
+  final num? parentId;
+  final bool? isParent;
+  final bool? status;
   final String? createdAt;
   final String? updatedAt;
 
   const Category({
+    required this.parentId,
+    required this.isParent,
     required this.id,
     required this.name,
-    required this.description,
-    required this.image,
+    this.description,
+    this.image,
+    required this.slug,
+    this.status,
     required this.createdAt,
     required this.updatedAt,
-    required this.productsCount,
-    required this.status,
   });
 }

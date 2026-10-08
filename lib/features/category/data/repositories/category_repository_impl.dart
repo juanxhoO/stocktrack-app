@@ -12,6 +12,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
     return remote.searchCategories(query: query);
   }
 
+  @override
   Future<Category> getCategory(String id) {
     return remote.getCategory(id);
   }
@@ -19,26 +20,34 @@ class CategoryRepositoryImpl implements CategoryRepository {
   @override
   Future<Category> createCategory({
     String? name,
+    bool? status,
+    num? parentId,
     String? description,
     String? image,
+    String? slug,
   }) {
     return remote.createCategory(
       name: name,
       description: description,
-      image: image,
+      slug: slug,
     );
   }
 
   @override
   Future<Category> updateCategory({
+    String? id,
+    bool? status,
     String? name,
+    num? parentId,
     String? description,
+    String? slug,
     String? image,
   }) {
     return remote.updateCategory(
+      id: id,
       name: name,
       description: description,
-      image: image,
+      slug: slug,
     );
   }
 

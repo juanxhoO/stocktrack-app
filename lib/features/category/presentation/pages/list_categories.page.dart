@@ -203,7 +203,6 @@ class _CategoryListPageState extends ConsumerState<CategoryListPage> {
                 AppTableColumn(label: 'Name'),
                 AppTableColumn(label: 'Description'),
                 AppTableColumn(label: 'Status'),
-                AppTableColumn(label: 'Number of products'),
                 AppTableColumn(label: 'Actions'),
               ],
               rows: categories.map((category) {
@@ -211,8 +210,29 @@ class _CategoryListPageState extends ConsumerState<CategoryListPage> {
                   cells: [
                     Text(category.name),
                     Text('${category.description}'),
-                    Text(category.id),
-                    Text('items'),
+                    Chip(
+                      backgroundColor: category.status == true
+                          ? Colors.green.shade50
+                          : Colors.red.shade50,
+                      avatar: Icon(
+                        category.status == true
+                            ? Icons.check_circle_outline
+                            : Icons.cancel_outlined,
+                        size: 18,
+                        color: category.status == true
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                      label: Text(
+                        category.status == true ? 'Active' : 'Inactive',
+                        style: TextStyle(
+                          color: category.status == true
+                              ? Colors.green.shade700
+                              : Colors.red.shade700,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

@@ -7,19 +7,20 @@ class UpdateCategoryUseCase {
   UpdateCategoryUseCase(this.repository);
 
   Future<Category> call({
+    String? id,
     String? name,
+    bool? status,
+    num? parentId,
+    String? slug,
     String? description,
-    String? image,
-    double? price,
-    String? barcode,
-    String? category,
-    int? quantityPerUnit,
-    String? unitOfMeasurement,
   }) {
     return repository.updateCategory(
+      id: id,
       name: name,
+      status: status,
+      parentId: parentId,
+      slug: slug,
       description: description,
-      image: image,
     );
   }
 }

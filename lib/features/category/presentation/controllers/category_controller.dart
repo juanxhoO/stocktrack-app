@@ -74,32 +74,55 @@ class CategoryController extends Notifier<CategoryState> {
     }
   }
 
-  Future<void> createCategory({String? name, String? description}) async {
+  Future<bool> createCategory({
+    String? name,
+    String? description,
+    bool? status,
+    num? parentId,
+    required String slug,
+  }) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final createCategoryUseCase = ref.read(createCategoryUseCaseProvider);
       final category = await createCategoryUseCase.call(
         name: name,
         description: description,
+        slug: slug,
+        status: status,
+        parentId: parentId,
       );
       state = state.copyWith(isLoading: false, category: category);
+      return true;
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
+      return false;
     }
   }
 
-  Future<void> updateCategory({String? name, String? description}) async {
+  Future<bool> updateCategory({
+    String? id,
+    String? name,
+    String? description,
+    String? slug,
+    bool? status,
+    num? parentId,
+  }) async {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
       final updateCategoryUseCase = ref.read(updateCategoryUseCaseProvider);
       final updatedCategory = await updateCategoryUseCase.call(
+        id: id,
+        status: status,
         name: name,
         description: description,
+        slug: slug,
       );
       state = state.copyWith(isLoading: false, category: updatedCategory);
+      return true;
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
+      return false;
     }
   }
 }

@@ -6,10 +6,20 @@ class CreateCategoryUseCase {
 
   CreateCategoryUseCase(this.repository);
 
-  Future<Category> call({String? name, String? description, String? image}) {
+  Future<Category> call({
+    String? name,
+    String? description,
+    String? slug,
+    bool? status,
+    num? parentId,
+    String? image,
+  }) {
     return repository.createCategory(
       name: name,
       description: description,
+      slug: slug,
+      status: status,
+      parentId: parentId,
       image: image,
     );
   }
